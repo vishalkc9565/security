@@ -18,5 +18,6 @@ update-alternatives --config java
 sudo update-alternatives --config java
 update-alternatives --config java
 cd 
+
 cd Downloads/Burpsuite
 java -noverify -jar ESEdition.jar
