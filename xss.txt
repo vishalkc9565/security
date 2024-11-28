@@ -1,4 +1,7 @@
 XSS types
+	- install dom invader in burp
+
+	
 	when you are seaching somewhere and if its burf then the search text added in dom by js will not be shown
 
 

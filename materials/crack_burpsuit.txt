@@ -1,23 +1,4 @@
-wget https://builds.openlogic.com/downloadJDK/openlogic-openjdk/8u262-b10/openlogic-openjdk-8u262-b10-linux-x64-deb.deb
-wget https://doc-0k-3o-docs.googleusercontent.com/docs/securesc/5c1ca4eppod7dii72320cl4m0hba0023/974i2k416fktmq014hgl7smu4epfga43/1689400050000/17763578531890199671/17009527481853911835Z/1SfKN6UaKHCONS7F92weRqVMc22DZIlYU?e=download&uuid=cfe417fc-87bc-48db-a458-ce240cc63fa0&nonce=e44tb4t8b4d2q&user=17009527481853911835Z&hash=6qgokqu7arn2c6uiiae11totf8vpj9rf
+Burpsuite installation: 
+https://medium.com/@sherlock297/install-burp-suite-pro-on-kali-linux-6abccc3860a8
+https://drive.google.com/drive/folders/1KGsoJTLgxJXRj_u0MEidyMMKsLs6sCFX 
 
-cd Downloads
-ls
-unzip Burpsuite.zip
-ls
-cd Burpsuite
-ls
-java -noverify -jar ESEdition.jar
-java -noverify -jar burpsuite_pro_v1.7.34.jar
-java -version
-update-alternatives --config java
-dpkg -i ../openlogic-openjdk-8u262-b10-linux-x64-deb.deb 
-dpkg -i ../openlogic-openjdk-8u262-b10-linux-x64-deb.deb
-sudo dpkg -i ../openlogic-openjdk-8u262-b10-linux-x64-deb.deb
-update-alternatives --config java
-sudo update-alternatives --config java
-update-alternatives --config java
-cd 
-
-cd Downloads/Burpsuite
-java -noverify -jar ESEdition.jar

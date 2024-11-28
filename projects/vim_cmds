@@ -1,0 +1,2 @@
+`:sort` or `:%sort` to sort lines in ascending and reverse
+`ggvG:`: `gg` top document, `v` visual/select mode, `G` end of document and then `:` to select all

