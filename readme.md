@@ -397,13 +397,28 @@ Priviledged action
 ## Subdomain takeover
 First study the subdomain takeover
 - ![domain takeover](images/domain-takeover.png)
-- Use github pages hosting and give the default domain name instead of github.io
+  CNAME  help.google.com         thirdparty-domain.com
+  use dig command to check for CNAME record
+  #### fastest subjack
+  `subjack -w live_subdomain_httpx_toolkit -v`
+  
+  `subzy run --target live_subdomain_httpx_toolkit_subonly`
+  ### nuclei
+	`nuclei -l live_subdomain_httpx_toolkit -profile subdomain-takeovers`
+	- templates present at `~/.local/nuclei-templates`
+	- templates repo is given by `projectdiscovery`
+  	- nuclei templates are also there
+
+- Use github pages hosting and give the default domain name alias instead of github.io
 - check for the subdomain availablility by visiting and seeing that 404 error or something showing it's not mapped
-- go to github and add custom domain for the repo with the same subdomain to take over
-- https://www.youtube.com/watch?v=ds7GHLXi5dM
-- https://www.hackerone.com/hackerone-community-blog/guide-subdomain-takeovers
+- go to github and add custom domain for the repo with the same subdomain to take over : https://github.com/vishalkc9565/domain-takeover/settings/pages 
+- Ref: 
+  - https://www.youtube.com/watch?v=ds7GHLXi5dM
+  - https://www.hackerone.com/hackerone-community-blog/guide-subdomain-takeovers
 - while reporting, host the html page at random location with secret message to present that you found this issue.
 
+- check vulnerable cloud services: 
+  	https://github.com/EdOverflow/can-i-take-over-xyz
 
 #### Important commands  
 ```
