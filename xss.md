@@ -1,9 +1,15 @@
-XSS types
+### XSS types
+	- Types of XSS: search, form, and parameter
+		1. Reflected : 
+		2. Stored 
+		3. DOM: search for eval
+		4. Blind : XSS hunter express
 	- install dom invader in burp
-
+	
+	- ployglots:  jaVasCript:/*-/*`/*\`/*'/*"/**/(/* */oNcliCk=alert() )//%0D%0A%0d%0a//</stYle/</titLe/</teXtarEa/</scRipt/--!>\x3csVg/<sVg/oNloAd=alert()//>\x3e     also search for more
 	
 	when you are seaching somewhere and if its burf then the search text added in dom by js will not be shown
-
+	
 
 	Reflected cross site attack
 		when a text box takes input and renders into the page
@@ -13,7 +19,7 @@ XSS types
 		    `abcd\"-alert(1)}//` for getting response like {"results":[],"searchTerm":"abcd\\"-alert(1)}//"}
 		also check if escape is there for few characters like /, ", ' 
 		use - instead of + because + is always URL encoded
-
+		if something like script is removed then use sscriptcript which will remove script but still get script
 
 		https://portswigger.net/web-security/cross-site-scripting/dom-based/lab-dom-xss-reflected
 

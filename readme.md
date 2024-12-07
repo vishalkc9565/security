@@ -45,7 +45,7 @@ Kali-menu > password profiling worklist
 	waybackurls
 	juicyurls
 	gau
-	nuclie: automate the vulnerability detection template using YAML; There is tons of template on github. e.g. log4j nuclie template, --HEADLESS, TCP/TLS/UDP (networks), File
+	UDP (networks), File
 	telenet  : advanced usage
 
 	skipfish # test security for vulnerability : check again and describe more
@@ -138,6 +138,7 @@ Kali-menu > password profiling worklist
 	reconftw [Not working]
 	`./reconftw.sh -d target.com -a`
 
+	## exploit-db 
 	exploit database: gives the list of all the bugs of the past
 
 
@@ -404,10 +405,11 @@ First study the subdomain takeover
   
   `subzy run --target live_subdomain_httpx_toolkit_subonly`
   ### nuclei
-	`nuclei -l live_subdomain_httpx_toolkit -profile subdomain-takeovers`
+	`nuclei -l live_subdomain_httpx_toolkit -t profiles/subdomain-takeovers -file`
 	- templates present at `~/.local/nuclei-templates`
 	- templates repo is given by `projectdiscovery`
-  	- nuclei templates are also there
+  	- nuclei templates are also there `nuclei -update-template`
+  
 
 - Use github pages hosting and give the default domain name alias instead of github.io
 - check for the subdomain availablility by visiting and seeing that 404 error or something showing it's not mapped
@@ -468,6 +470,7 @@ e.g. cheatsheet
 "onmouseover="alert(1)
 https://"onmouseover="alert(1)
 
+cheatsheet :  https://cheatsheetseries.owasp.org/cheatsheets
 
 ## PATH traversal
 Go to different path traversal payload
