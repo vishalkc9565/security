@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Throw</title>
+  </head>
+  <body>
+    <script>
+        x=x=>{throw onerror=alert,123;}
+        // x();
+        toString=x
+        // toString();
+        // window+'';  
+        
+        // adding extra argument to function call but not the definition
+        function f(a,b){
+            return a+b;
+        }
+        console.log(f(2,4,x=5));
+        x=x=>{throw onerror=alert,123;},toString=x,window+'',
+    </script>
+  </body>
+</html>
+
