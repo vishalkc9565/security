@@ -1,5 +1,5 @@
 ### XSS types
-When you are seaching somewhere and if its burf then the search text added in dom by js, will not be shown
+
 XSS types
 - Types of XSS: search, form, and parameter
     1. Reflected : 
@@ -7,6 +7,8 @@ XSS types
     3. DOM: search for eval
     4. Blind : XSS hunter express
 
+
+When you are seaching somewhere and if its burp then the search text added in dom by js, will not be shown
 
 
 ### Reflected or Stored XSS 
@@ -22,7 +24,7 @@ XSS types
 - If space is blocked in js then we can use `/**/` which is basically comment
 - Check for what are all things that are escaped and what are not excaped
   - `'"</\->` or `/["'\\`]/g, '\\$&()=<>`
-
+- HTML entity Decode and encode
 - Advance concept:
   - `throw onerror=alert,123` : `throw` only returns the last argument and onerror is the handler assigned with alert, and also throw itself triggers onerror function which in turns execute alert(123)
   - `x=x=>{}` is a function with one argument
@@ -213,10 +215,12 @@ Nice blog: https://portswigger.net/research/xss-without-parentheses-and-semi-col
 	<script>throw onerror=alert,'some string',123,'haha'</script>
 Cheatsheet : https://portswigger.net/web-security/cross-site-scripting/cheat-sheet 
 
- 
+Cheatsheet2: https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html
+
+
 TO read:
 	https://portswigger.net/web-security/dom-based
-
+  
 
 
 
@@ -230,6 +234,7 @@ Also it refers to the source where js can be executed like `self`
 - CSP bypass for XSS. 
 - any `unsafe` is actually unsafe
 
+https://www.cobalt.io/blog/csp-and-bypasses
 
 #### CORS:
 

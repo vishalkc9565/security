@@ -53,7 +53,11 @@
   - to collect detailed information
 - amass
   - amass intel -h
-
+  - amass enum -active -d wellsfargo.com -p 80,443,8080  | tee subdomain_amass.txt
+    ~~amass viz -d3 -d <domain-name>~~
+    ~~amass track -d <domain-name> # to track the recently added subdomain, good to hunt for recently added subdomain~~
+    ~~ammas enum -df <file-with-domains> | tee subdomain_amass.txt~~
+    
 ## Shodan
 shodan : a web browser for ethical hackers to browse non www part of internet whereas google does only www part of internet. ref: https://www.youtube.com/watch?v=dFH7wNyPRjM&list=PLOJR6EhNalnu7hgxu7QhA9GrF9i23JX9A&index=8
     - create account 
@@ -87,7 +91,8 @@ chaos client for cli
     - netcraft dns
     - Project discovery io chaos
 
-
+### commands to find domain
+<TODO> at subdomain-enum.md
 
 ### httpx-toolkit/probe to do following 
 - Check domain is live or not
@@ -97,8 +102,10 @@ chaos client for cli
 - Tech stack and status code check [very important]
 - Screenshot
   `httpx-toolkit -l all_subdomain.txt -t 100  -o live_subdomain_httpx_toolkit -nc -v -stats -timeout 60 -pa -fr -sc -td`
+- don't give any analysis to ip just proceed with subdomain eyewitness
+  - `cat live_subdomain_httpx_toolkit| awk -F ' ' '{print $1}'| awk -F '^http://|^https://' '{print $2}' | uniq |  tee  live_subdomain`
 
-### httprobe
+### httprobe (similar to httx-toolkit but is inferior to it)
 `cat all_subdomain.txt| httprobe -c 100 --prefer-https | anew live_domain_httprobe`
 
 
@@ -106,19 +113,43 @@ chaos client for cli
 `git clone https://github.com/nil0x42/inscope`
 `sudo cp inscope/inscope /usr/local/bin/`
 
-There is `.SCOPE` file which keeps track of scope
+There is `./SCOPE` file which keeps track of scope
 
 
 
 ###  Eyewitness cmd for screenshot
 –timeout, -F filename, –web, –thread
-`eyewitness --web -f all_live_subdomain_only --timeout 100 -d livesubdomain_screenshot_eye`
 
+```
+eyewitness --web -f live_subdomain --timeout 100 -d livesubdomain_screenshot_eye --thread 1 --prepend-https
+```
+- To resume the screenshot process
+  `eyewitness --resume`
+
+
+### Record all response 
+
+`awk '{print "https://"$1"/"}'  live_subdomain > live_subdomain_with_http `
+`meg --verbose  ~/combined_words.txt  live_subdomain_with_http  meg.out  -d 5000 -c 100`
+
+- find resources like `roboot.txt`, `package.json` `.well-known/security.txt`
 
 ====>>>  secret information in try/hackme/readme.md
 
+	
+### Directory brute forcing
+`gobuster dir -u "https://www.zerobounce.net/docs/" -w ~/Downloads/combined_words.txt -t 100 -b 429,301 -r`
+Or 
+`dirb https://www.zerobounce.net <wordlist>` # did not give good result
+or
+ffuf
+Or dirsearch <good for bruteforcing> for file and subdomains
+Or fuff
 
 
+
+#------------------------------------------------------
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 tricks:
 - parametrised URL with status code 200 has most of the vulnerability
 - sub-subdomain has chance of finding more bug than subdomain
