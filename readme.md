@@ -5,7 +5,9 @@ run ./burp.sh
 Information about system:
 ```
 echo $SHELL
+python3 -m http.server 8080
 ```
+
 
 
 TODO:
@@ -405,11 +407,12 @@ First study the subdomain takeover
   
   `subzy run --target live_subdomain_httpx_toolkit_subonly`
   ### nuclei
-	`nuclei -l live_subdomain_httpx_toolkit -t profiles/subdomain-takeovers -file`
+	`nuclei -config  /home/kali/.local/nuclei-templates/profiles/subdomain-takeovers.yml -l live_subdomain`
 	- templates present at `~/.local/nuclei-templates`
+	- `-file` option is required for running nuclei file template
 	- templates repo is given by `projectdiscovery`
-  	- nuclei templates are also there `nuclei -update-template`
-  
+  	- nuclei templates are also there `nuclei -update-templates`
+	- usage of templates inside profile: https://github.com/projectdiscovery/nuclei-templates/blob/main/profiles/README.md 
 
 - Use github pages hosting and give the default domain name alias instead of github.io
 - check for the subdomain availablility by visiting and seeing that 404 error or something showing it's not mapped
@@ -418,7 +421,7 @@ First study the subdomain takeover
   - https://www.youtube.com/watch?v=ds7GHLXi5dM
   - https://www.hackerone.com/hackerone-community-blog/guide-subdomain-takeovers
 - while reporting, host the html page at random location with secret message to present that you found this issue.
-
+- `NXDOMAIN` is a standard DNS response for non-existent domains.
 - check vulnerable cloud services: 
   	https://github.com/EdOverflow/can-i-take-over-xyz
 
@@ -453,25 +456,7 @@ The session fixation attack “fixes” an established session on the victim's b
 - Session token in a hidden form field
 - Session ID in a cookie
 
-
-## XSS: Cross site scripting:
-- Reflected
-- Stored
-- Dom
-
-Reflected and stored are similar
-DOM are browser only vulnerabilities and they does not go to server
-using user input, # or query paramenter field directly into dom
-use innerText instead of innerHtml to mitigate this
-
-e.g. cheatsheet
-"><h1>test</h1>
-'+alert(1)+'
-"onmouseover="alert(1)
-https://"onmouseover="alert(1)
-
-cheatsheet :  https://cheatsheetseries.owasp.org/cheatsheets
-
+ 
 ## PATH traversal
 Go to different path traversal payload
 

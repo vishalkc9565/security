@@ -120,9 +120,7 @@ There is `./SCOPE` file which keeps track of scope
 ###  Eyewitness cmd for screenshot
 –timeout, -F filename, –web, –thread
 
-```
-eyewitness --web -f live_subdomain --timeout 100 -d livesubdomain_screenshot_eye --thread 1 --prepend-https
-```
+`eyewitness --web -f live_subdomain --timeout 100 -d livesubdomain_screenshot_eye --thread 1 --prepend-https`
 - To resume the screenshot process
   `eyewitness --resume`
 
@@ -140,7 +138,7 @@ eyewitness --web -f live_subdomain --timeout 100 -d livesubdomain_screenshot_eye
 ### Directory brute forcing
 `gobuster dir -u "https://www.zerobounce.net/docs/" -w ~/Downloads/combined_words.txt -t 100 -b 429,301 -r`
 Or 
-`dirb https://www.zerobounce.net <wordlist>` # did not give good result
+`dirb https://www.zerobounce.net <wordlist>` # does recursive directory iteration
 or
 ffuf
 Or dirsearch <good for bruteforcing> for file and subdomains

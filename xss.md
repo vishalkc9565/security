@@ -241,6 +241,12 @@ https://www.cobalt.io/blog/csp-and-bypasses
 Cross origin resource: It tells what resource to access depending upon the header and origin provided. 
 - Shodan can be used to check ACAO or other very easily. Query : `"Access-Control-Allow-Origin: null"`
 - URL 'Origin: http://example.com`.hackxor.net/'(safari) is parses as Origin: http://example.com or 'Origin: http://example.com_hackxor.net/' (firefox or chrome)
+- Do add `Origin` in header
+- Do subdomain check and domain suffix check
+- Do protocol check
+- Do check if Vary is added in response header as most of the time dynamic ACAO header is used
+- Do `origin: null` check
+- Most of the time intranet have ACAO set to `*`, ref: https://portswigger.net/research/exploiting-cors-misconfigurations-for-bitcoins-and-bounties 
 - Checking if all subdomain are whitelisted `Access-Control-Allow-Origin: *.example.com`
 - checking the protocol restriction: 
 If a website is accessed over HTTPS but will happily accept CORS interactions from http://wherever, someone performing an active man-in-the-middle (MITM) attack can pretty much bypass its use of HTTPS entirely. ![CORS Protocol Relaxation Vulnerability](images/cors-protocol.png)
@@ -265,6 +271,7 @@ Access-Control-Allow-credentials: true # allow cookies
 - Check using different value of `origin` and different protocol like `http(s)` in request header to see if we get ACAO
     Intercept all traffic and exploit via man in the middle: https://portswigger.net/web-security/cors , section: Breaking TLS with poorly configured CORS
 - dynamic gereration of ACAO using wildcard
+  * Add `Origin` to see if ACAO is coming in response
   * Some origin starts with is vulnerable https://btc.net.evil.net
   * some origin ends with is also vulnerable 
     * https://*zomato.com is vulnerable as https://notzomto.com can be used
@@ -287,7 +294,7 @@ Access-Control-Allow-credentials: true # allow cookies
   * ACAO is not sent in response by most of server when origin is not given in request so check with origin request header to get if CORS header are there in response
   * `ACAC` is false by default
 - Developer gold
-  - Specifiying this static header call `Vary:Origin` if dynamic header are used
+  - Specifiying this static header call `Vary:Origin` if dynamic header are used as if not given then
   - Even w3 sites do not have this header. haha
   - cache poisioning: client side
 - `HttpOnly` flag is responisble for sharing cookies across all subdomain of a domain. if set: cannot read document.cookie

@@ -56,7 +56,8 @@ https://tryhackme.com/r/room/owasptop10
   nuclei -l alljs_katana -t 'file/js' -t file/keys -file -vv
 
   ```
-  
+  for running takeover templates:
+  `nuclei -t http/takeovers -stats -vv -pc 10 -jsc 60  -l live_subdomain_httpx_toolkit_subdomain_only`
   Bursuite jsfinder addon installation
 
 ### Scan port and version using IP
@@ -82,14 +83,14 @@ Finding a lot of IPs
 `
     - `massscan` 
       - nmap is for depth port scan of single machine while masscan is for port scanning on many devices
-      - To create configuration `sudo masscan -iL allips -p80 --banners  -p1-100  --output-format list -oL ip_masscan --rate=1000 --echo > masscan.conf`
+      - To create configuration `sudo masscan -iL allips  --banners  -p80,443,22,8080,3678 --top-ports 100  --output-format list -oL ip_masscan --rate=1000 --echo > masscan.conf`
         - At rate=1000 gives reliable result and make the ports all not more than 1000
+        - `-p1-1000,8080` can also be used for ports
       - To start the scan `masscan --resume masscan.conf`
       - To resume the scan `masscan --resume paused.conf` 
-    
-      - 
-      `sudo masscan 142.250.194.78   --top-ports 100  --rate=10000`
-      `sudo masscan <cidr>   -p0-1000  --rate=10000`
+  
+  
+    - `sudo masscan <cidr>   -p0-1000  --rate=10000`
       Have not figured out the nmap usage in this
       `sudo masscan  142.250.194.78  -p80,443 --rate=10000 -oL portscan_out`
       

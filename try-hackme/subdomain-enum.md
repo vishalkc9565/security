@@ -28,9 +28,11 @@ Chatgpt for asking acquisition to make horizontal domain for the same company
 
 - `assetfinder wellsfargo.com | uniq | tee subdomain_assetfinder.txt`
 - `subfinder  -d wellsfargo.com -all -silent | uniq | tee  subdomain_subfinder.txt` (set api key)
-- `gau --threads 5 wellsfargo.com | tee subdomainres_gau.txt`
-- `cat subdomainres_gau.txt | awk -F '//' '{print $2}' | awk -F '/' '{print $1}' | anew subdomain_gau.txt`
 - `chaos -d wellsfargo.com -o subdomain_chaos`
+- This list all the URLs and not there for subdomains
+  - `gau --threads 5 wellsfargo.com | tee subdomainres_gau.txt`
+  - `cat subdomainres_gau.txt | awk -F '//' '{print $2}' | awk -F '/' '{print $1}' | anew subdomain_gau.txt`
+
 
 ### Sublist3r
 Enumeration of subdomain using fuzzing
@@ -67,12 +69,13 @@ Make use of bigword list in VPS on assetnote but not locally
 - Worklist form subdomain wordlist seclist, nokov subdomain, awesome subdomain enumeration
 
 ### Find Sub-subdomain
-
+	
+* Gives live subdomain and sub subdomain
 - Oneforall
 - `vi ~/.config/containers/registries.conf`
 - `unqualified-search-registries = ["docker.io"]`
 - `docker pull shmilylty/oneforall`
-- `mkdir one4all_res; docker run -it --rm -v ./one4all_res:/OneForAll/results oneforall --target wellsfargo.com run` # Gives live subdomain and sub subdomain
+- `mkdir one4all_res; docker run -it --rm -v ./one4all_res:/OneForAll/results oneforall --target wellsfargo.com run` # 
 <what are the other ways>
 
 
@@ -86,7 +89,7 @@ Make use of bigword list in VPS on assetnote but not locally
 
 ### (Active IP lookup)
 Active DNS resolution lookup tool
-- `massdns -r  ../tools/massdns/lists/resolvers.txt -t A -o S -w live_subdomain.txt all_subdomain.txt`
+- `massdns -r  ../resolvers.txt -t A -o S -w live_subdomain_massdns.txt all_subdomain.txt`
 - Collect the IPs from here and later do `masscan` or `nmap`
 - 
 

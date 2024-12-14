@@ -19,6 +19,12 @@ export PATH=$GOPATH/bin:$GOROOT/bin:$HOME/.local/bin:$PATH
 export GOROOT= 
 ```
 
+### Subfinder setup
+API key setup
+
+
+
+
 
 
 GOROOT path set to EMPTY solves the compilation error
