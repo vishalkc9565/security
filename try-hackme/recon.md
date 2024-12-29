@@ -124,6 +124,10 @@ There is `./SCOPE` file which keeps track of scope
 - To resume the screenshot process
   `eyewitness --resume`
 
+#### Bypass 403
+- Sometimes the response code is 403 which can fetch the URL using X-Forwarded-For
+`X-Forwarded-For: 127.0.0.1:80`
+
 
 ### Record all response 
 

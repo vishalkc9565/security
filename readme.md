@@ -6,6 +6,9 @@ Information about system:
 ```
 echo $SHELL
 python3 -m http.server 8080
+pgrep -a "python3"
+
+Add Header Burpsuit : Proxy > Options > Match & Replace > Add Headers > Add Header: X-Forwarded-Token: 0.0.0.0
 ```
 
 
@@ -181,7 +184,8 @@ ref: Cody’s First Blog CTF
 when request is allowed for only few IPs and blocker for other, hence use some header
 `X-Forwarded-For: IP`
 
-
+TO READ: 
+https://securityidiots.com/
 
 ## SQL Injection
 sqlmap "http://example.com/page.php?id=1" --dbs # enumerate databases
@@ -190,6 +194,7 @@ sqlmap -u "http://example.com/page.php?id=1" --D <DB-NAME> --dump # iterate tabl
 ### Sqlite injection
 Flat files db are used for small db. Some sqlite commands are
 `PRAGMA table_info(<table-name>)`, `.tables`
+for UNION use NULL in select to determine the number of columns
 
 #### Crack Hash/ password
 crackstation.net 

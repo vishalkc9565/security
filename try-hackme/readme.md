@@ -185,16 +185,16 @@ Pre-written scripts are available at `/usr/share/nmap/scripts`
 XML: platorm independent, programming independent
 Validation using DTD(Document Type Definition) and schema
 e.g.
-```
-<? xml version="1.0" encoding="utf-8" ?>
+
+`<? xml version="1.0" encoding="utf-8" ?>
 <mail>
 </mail>
-```
+`
 
 filename: note.dtd 
 ``` 
 <!DOCTYPE note [ <!ELEMENT note (to, from, heading, body)> <! ELEMENT to (#PCDATA)> <!ELEMENT from (#PCDATA)> <!ELEMENT heading (#PCDATA)> <!ELEMENT body (#PCDATA)>] <!ENTITY greeting "hello world"> >
-
+```
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE note SYSTEM "note.dtd">
@@ -204,7 +204,7 @@ filename: note.dtd
     <heading>hacking</heading>
     <body>XXE attack</body>
 </note>
-
+```
 
 So now let's understand how that DTD validates the XML. Here's what all those terms used in note.dtd mean
 
@@ -223,14 +223,13 @@ The below payload gives the content of the file back to user from password file
 <? xml version="1.0" ?>
 <!DOCTYPE root [<!ENTITY read SYSTEM 'file:///etc/passwd'>]>
 <root>&read; </root>
-```
-```
+
 <? xml version="1.0" ?>
 <!DOCTYPE replace [<!ENTITY name 'feast'>]>
 <root>&name; </root>
 ```
 
-
+```
 #### Attack
 XML parsing abuse is the main reason for the attack
 - DOS attack
@@ -275,6 +274,10 @@ If the ping is not working, then there could be firewall problem.
 
 
 ### Race condition
+- Determination of 
+"time-of-check to time-of-use" (TOCTOU) flaws are vulnerabilities where the value of a variable is used before it is safe to use.
+
+
 Keywords
 - Multiprocessing
 - Multithreading
@@ -282,18 +285,57 @@ Keywords
 
 Having inconsistent value of variable while doing the multi-process/thread
 * where to find?
-- transaction step
-- coupon code
-- redeem code
-- following user
-- liking videos
+  - transaction step
+  - coupon code
+  - redeem code
+  - following user
+  - liking videos
+  - rating
 
 * how to find?
-- use nuclei to fire parallel request
-- use curl * x times and check the final state
-- use turbo-inculder in burpsuit
+  - check if any endpoint have race condition which means if they have different output in sequence and inconsistent output in parallel. (User burp turbo intruder or parallel group request of repeater)
+  - If there is lot of db calls for a single request in the backend then probably it has race condition
 
-
+  - use `turbo-intruder` in burpsuit
+      For HTTP/1, it uses the classic last-byte synchronization technique.
+      For HTTP/2, it uses the single-packet attack technique, first demonstrated by PortSwigger Research at Black Hat USA 2023.
+    - In burp repeater > create tab group by click `+` and then add  tabs to the group, also duplication of tab in the group is there. Try to send the packet in group in parallel and race condition is discovered. only  **HTTP/2** is preffable but not mandatory
+    - check the python code to run in parallel using gate where gate is used to withold last byte of all request and at end send it for all connection.
+  - use nuclei to fire parallel request
+  - use curl * x times and check the final state
+  
+Background for TURBO Intruder:
+  - Request is really fast. `Skipfish` is very fast because it does not waste time with TCP and TLS handshake.It does once and does request all.
+  - `HTTP Pipelining` makes very fast, faster than `skipfish`. Browser does not support but server does . So it does the SEND, SEND, SEND and after then READ, READ, READ. It uses the same concurrent connection to send all request. so does not get limit by server number of workers running.
+  - HTTP 2 does not made any much difference and hence `HTTP Pipeline`
+  - `queueRequests` is the function which sends the request where requests are queued using `engine.queue` and then sent out at once using `engine.openGate` or without it
+    - `concurrentConnection`: number of connection with server where the request is going to be sent for a single handshake. (1-30)
+    - `requestsPerConnection`: Number of request sent per connection where if the retries increases then make the request optimal by reducing it till it reaches always 0. 10 times faster
+    - `Pipeline`: make it 400 times faster
+    - `learn` in `engine.queue` makes the assignment of interesting variable making it true or false. SO for boring response make `learn=1` in one request and  it would become boring and `learn=1` interesting for other request which is different from this
+    - `wordlists.observedWords` : all word that has be observed in the proxy
+    - Inside handleResponse we can have req.engine.queue for conditional queuing on response also. Usecase example is bruteforce traversal.
+   
+    - `engine = engine.BURP` will use network of burp but without it, will use your local network where SSL and other burp features would not be available
+    - Typically Engine.HTTP2 is the fastest if it works followed by a well-tuned Engine.THREADED, followed by Engine.BURP2 then Engine.BURP.
+    - Can do anthing like enumerating username/host/cookie/header/file/folder/route etc
+  - Becuase of huge number of request, everything should not shown so we can filter out the response using `handleResponse` which we want to see so that memory does not get full.** Before going long attacks completely different of race condition**, 
+    - filter out response. 
+    - stream data instead of buffering it. e.g. dont preload the wordlist but read line by lines using open(file).readlines
+    - ```
+    for word in open('/usr/share/dict/words'):
+      engine.queue(target.req, word.rstrip())```
+  - ```
+  def handleResponse(req, interesting):
+    if '200 OK' in req.response:
+        table.add(req)
+  ```
+  - Filter using decorator on table itself: https://github.com/PortSwigger/turbo-intruder/blob/master/decorators.md
+  ```@MatchStatus(200,204)
+  @MatchSizeRange(100,1000)
+  def handleResponse(req, interesting):
+      table.add(req)```
+  - For race condition, engine.start() should be before queueing it. but in other case we can start the engine and queue after it.
 
 ### HTML injection attack:
 Adding arbitrary html code into the page via passing html code to input/parameter. The target variable responsible is due to innerHTML or document.write

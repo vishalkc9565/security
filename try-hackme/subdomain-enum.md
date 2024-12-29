@@ -27,7 +27,7 @@ Chatgpt for asking acquisition to make horizontal domain for the same company
 (passive)
 
 - `assetfinder wellsfargo.com | uniq | tee subdomain_assetfinder.txt`
-- `subfinder  -d wellsfargo.com -all -silent | uniq | tee  subdomain_subfinder.txt` (set api key)
+- `subfinder  -d wellsfargo.coms | uniq | tee subdomain_subfinder.txt` (set api key)
 - `chaos -d wellsfargo.com -o subdomain_chaos`
 - This list all the URLs and not there for subdomains
   - `gau --threads 5 wellsfargo.com | tee subdomainres_gau.txt`
@@ -98,7 +98,7 @@ Active DNS resolution lookup tool
 - Httpx-toolkit
 - `httpx-toolkit -l all_subdomain.txt -t 100  -o live_subdomain_httpx_toolkit -nc -v -stats -timeout 60 -pa -fr -sc -td`
  Showing real-time statistics (-stats). The tool follows HTTP redirects (-fr), fetches HTTP status codes (-sc), and displays page titles (-td) to identify active subdomains and provide insights into the services they host, with a 60-second timeout for each request (-timeout 60). The -pa option ensures that all subdomains are probed, regardless of protocol
-- `cat all_subdomain.txt| httprobe --prefer-https | anew live_domain_httprobe`
+- Slow query to check `cat all_subdomain.txt| httprobe --prefer-https | anew live_domain_httprobe`
 - can be given CIDR
   
 ### 

@@ -21,7 +21,7 @@ export GOROOT=
 
 ### Subfinder setup
 API key setup
-
+/home/kali/.config/subfinder/provider-config.yaml
 
 
 
