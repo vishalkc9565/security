@@ -26,17 +26,17 @@ Chatgpt for asking acquisition to make horizontal domain for the same company
 ### Passive subdomain enumeration
 (passive)
 
-- `assetfinder wellsfargo.com | uniq | tee subdomain_assetfinder.txt`
-- `subfinder  -d wellsfargo.coms | uniq | tee subdomain_subfinder.txt` (set api key)
+- `assetfinder wellsfargo.com | sort | uniq | tee subdomain_assetfinder.txt`
+- `subfinder  -d wellsfargo.coms |sort |  uniq | tee subdomain_subfinder.txt` (set api key)
 - `chaos -d wellsfargo.com -o subdomain_chaos`
 - This list all the URLs and not there for subdomains
-  - `gau --threads 5 wellsfargo.com | tee subdomainres_gau.txt`
+  - `gau --threads 5 wellsfargo.com |sort | uniq | tee subdomainres_gau.txt`
   - `cat subdomainres_gau.txt | awk -F '//' '{print $2}' | awk -F '/' '{print $1}' | anew subdomain_gau.txt`
 
 
 ### Sublist3r
 Enumeration of subdomain using fuzzing
-	Fuff 
+	Ffuf 
 	Worklist form subdomain wordlist seclist, nokov subdomain, awesome subdomain enumeration
  
 
@@ -63,9 +63,10 @@ Make use of bigword list in VPS on assetnote but not locally
   - Config.yml
   - Datasources.yml [ check if configuration are getting loaded while running amass]
  
+
 ### Enumeration of subdomain using fuzzing
 
-- Fuff
+- Ffuf
 - Worklist form subdomain wordlist seclist, nokov subdomain, awesome subdomain enumeration
 
 ### Find Sub-subdomain
@@ -86,19 +87,30 @@ Make use of bigword list in VPS on assetnote but not locally
 ### Combine all the subdomain
 
 - `cat subdomain_* | anew all_subdomain.txt`
+  
+### Inscope URL
+`git clone https://github.com/nil0x42/inscope`
+`sudo cp inscope/inscope /usr/local/bin/`
+
+There is `./SCOPE` file which keeps track of scope
+`cat all_subdomain.txt |  inscope | tee  all_subdomain2.txt`
+`mv all_subdomain2.txt all_subdomain.txt`
+
 
 ### (Active IP lookup)
 Active DNS resolution lookup tool
 - `massdns -r  ../resolvers.txt -t A -o S -w live_subdomain_massdns.txt all_subdomain.txt`
 - Collect the IPs from here and later do `masscan` or `nmap`
-- 
+
+#### Gobuster
+`gobuster dns -w wordlist -d <domain name>`
 
 ### Other ways to check live subdomain
 
 - Httpx-toolkit
-- `httpx-toolkit -l all_subdomain.txt -t 100  -o live_subdomain_httpx_toolkit -nc -v -stats -timeout 60 -pa -fr -sc -td`
+- `httpx-toolkit -l all_subdomain.txt -t 100  -o live_ip_subdomain_httpx_toolkit -nc -v -stats -timeout 60 -pa -fr -sc -td`
  Showing real-time statistics (-stats). The tool follows HTTP redirects (-fr), fetches HTTP status codes (-sc), and displays page titles (-td) to identify active subdomains and provide insights into the services they host, with a 60-second timeout for each request (-timeout 60). The -pa option ensures that all subdomains are probed, regardless of protocol
-- Slow query to check `cat all_subdomain.txt| httprobe --prefer-https | anew live_domain_httprobe`
+- Slow query to check `cat all_subdomain.txt| httprobe --prefer-https | anew live_subdomain_httprobe`
 - can be given CIDR
   
 ### 

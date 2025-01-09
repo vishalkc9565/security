@@ -17,7 +17,7 @@ Submitting the single quote character ' and looking for errors or other anomalie
 				The data types in each column must be compatible between the individual queries.
 					`' UNION SELECT 'a',NULL,NULL,NULL--` and shift the datatype one by one like `' UNION SELECT NULL,'a',NULL,NULL--`
 					on oracle we could concatenate the columns `' UNION SELECT username || '~' || password FROM users--`
-	
+		`1' UNION SELECT '1`
 	In SELECT statements, within the ORDER BY clause.
 
 

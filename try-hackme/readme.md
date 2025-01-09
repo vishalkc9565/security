@@ -45,7 +45,7 @@ https://tryhackme.com/r/room/owasptop10
   `cat jsfile | mantra -s`
 
   #### Nuclei
-  Nuclei is used for running automation  and there are lot of automated scripts available inside nuclie template
+  Nuclei is used for running automation  and there are lot of automated scripts available inside nuclei template
   
  `-file` is necessary for the run
 
@@ -192,9 +192,10 @@ e.g.
 `
 
 filename: note.dtd 
-``` 
-<!DOCTYPE note [ <!ELEMENT note (to, from, heading, body)> <! ELEMENT to (#PCDATA)> <!ELEMENT from (#PCDATA)> <!ELEMENT heading (#PCDATA)> <!ELEMENT body (#PCDATA)>] <!ENTITY greeting "hello world"> >
 ```
+    <!DOCTYPE note [ <!ELEMENT note (to, from, heading, body)> <! ELEMENT to (#PCDATA)> <!ELEMENT from (#PCDATA)> <!ELEMENT heading (#PCDATA)> <!ELEMENT body (#PCDATA)>] <!ENTITY greeting "hello world"> >
+```
+
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE note SYSTEM "note.dtd">
@@ -278,26 +279,29 @@ If the ping is not working, then there could be firewall problem.
 "time-of-check to time-of-use" (TOCTOU) flaws are vulnerabilities where the value of a variable is used before it is safe to use.  A race condition vulnerability requires a 'collision' - two concurrent operations on a shared resource. So multi-threaded system would have the race condition.
 
 Predict collision ==>> Probe ==>>> POC
-
+[check the state where collision can occur] ==> [benchmark and then test for race condition] ==>> [if race condition is present then find the POC]
 1. (limit-overrun : accessing/using values multiple times than it was suppose to be accessed)
-2. Multi-step endpoint collision
+
+2. Multi-endpoint race collision
 - Detecting race condition
   - Predict collision attack: (race condition): check if same entity is affected. Everything is multi-step. Identify where this can impact like orders, applying code coupons, redeem codes, user and sessions
   - probe 
   - POC
+  e.g. Think about the classic logic flaw in online stores where you add an item to your basket or cart, pay for it, then add more items to the cart before force-browsing to the order confirmation page. 
 
 3. Single endpoint race condition:
   Email address confirmations, or any email-based operations, are generally a good target for single-endpoint race conditions. Emails are often sent in a background thread after the server issues the HTTP response to the client, making race conditions more likely
 
 
-4. Session base locking: PHP's native session handler module only processes one request per session at a time. so send request in parallel with different session 
+4. Session base locking: PHP's native session handler module only processes one request per session at a time. so send request in parallel with different session
+- php has session locking sequencial execution of request so try parallel request with different session
 
 
 5. Partial construction race conditions: Many applications create objects in multiple steps, which may introduce a temporary middle state in which the object is exploitable. 
 - Empty array option like `param[]=` are useful when we have a lot of intermediate steps and can be intercepted for verification/confirmation if any uninitialised record is created in the intermediate steps.
 - Add one more request for warming up the server
 
-5. Time-sensitive attacks:the techniques for delivering requests with precise timing can still reveal the presence of other vulnerabilities. One such example is when high-resolution timestamps are used instead of cryptographically secure random strings to generate security tokens. 
+5. Time-sensitive attacks: The techniques for delivering requests with precise timing can still reveal the presence of other vulnerabilities. One such example is when high-resolution timestamps are used instead of cryptographically secure random strings to generate security tokens. 
 
 Keywords
 - Multiprocessing

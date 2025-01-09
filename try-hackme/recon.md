@@ -1,6 +1,6 @@
 
 ### Concept
-- Every penetration testing should be customised for each target category like ecommerse, banking etc
+- Every penetration testing should be customised for each target category like ecommerce, banking etc
 - functionality mapping
   - Ecommerce
     - Major
@@ -11,7 +11,7 @@
       * Security of service continuity (DoS)
       * Security of Traffic diversion
 
-    - Minor ( based on targe)
+    - Minor ( based on target)
       * Search bar
       * Login
       * Oauth
@@ -37,11 +37,11 @@
     - arinwhois: Find IP pool ans ASN
     - mxtoolbox: CIDR using ASN
     - ipaddressguide :  to find IP range using CIDR range
-    - BGP.he.net : get using ASN
+    - BGP.he.net : get using ASN (this works)
     - Viewdns.info: all in one
       - reverse whois Lookup using email for horizontal correlation
       - and many more
-    - lopseg.com br : all in one
+    - lopseg.com.br/osint : all in one (IMPORTANT) ( check different options: webarchieve and check each link)
     - whoxy
     - All acquistion to collect domains using chatgpt
     - nslookup to collect dns record
@@ -87,12 +87,13 @@ chaos client for cli
 ### Manually finding subdomain
     - crt.sh 
       - %.facebook.com
-    - virustotal
+    - virustotal.com
     - netcraft dns
     - Project discovery io chaos
 
 ### commands to find domain
 <TODO> at subdomain-enum.md
+
 
 ### httpx-toolkit/probe to do following 
 - Check domain is live or not
@@ -101,26 +102,16 @@ chaos client for cli
 - ASN ping
 - Tech stack and status code check [very important]
 - Screenshot
-  `httpx-toolkit -l all_subdomain.txt -t 100  -o live_subdomain_httpx_toolkit -nc -v -stats -timeout 60 -pa -fr -sc -td`
+  `httpx-toolkit -l all_subdomain.txt -t 100  -o live_ip_subdomain_httpx_toolkit -nc -v -stats -timeout 60 -pa -fr -sc -td`
 - don't give any analysis to ip just proceed with subdomain eyewitness
-  - `cat live_subdomain_httpx_toolkit| awk -F ' ' '{print $1}'| awk -F '^http://|^https://' '{print $2}' | uniq |  tee  live_subdomain`
+  - `cat live_ip_subdomain_httpx_toolkit live_subdomain_httprobe | awk -F ' ' '{print $1}'| awk -F '^http://|^https://' '{print $2}' | uniq |  anew  live_subdomain`
 
-### httprobe (similar to httx-toolkit but is inferior to it)
-`cat all_subdomain.txt| httprobe -c 100 --prefer-https | anew live_domain_httprobe`
-
-
-### Inscope URL
-`git clone https://github.com/nil0x42/inscope`
-`sudo cp inscope/inscope /usr/local/bin/`
-
-There is `./SCOPE` file which keeps track of scope
-
-
+ 
 
 ###  Eyewitness cmd for screenshot
 –timeout, -F filename, –web, –thread
 
-`eyewitness --web -f live_subdomain --timeout 100 -d livesubdomain_screenshot_eye --thread 1 --prepend-https`
+`eyewitness --web -f live_subdomain --timeout 100 -d livesubdomain_screenshot_eye --thread 4 --prepend-https`
 - To resume the screenshot process
   `eyewitness --resume`
 
@@ -146,7 +137,7 @@ Or
 or
 ffuf
 Or dirsearch <good for bruteforcing> for file and subdomains
-Or fuff
+Or ffuf
 
 
 

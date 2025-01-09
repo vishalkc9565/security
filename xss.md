@@ -15,7 +15,7 @@ When you are seaching somewhere and if its burp then the search text added in do
 ### Reflected or Stored XSS 
 - First do the spider or  katana to do  crawling
 - XSS on Wordpress
-- Check this everywhere in every input or anything having params or link tag: `<img src=0 onerror='alert(1)'>`
+- Check this everywhere in every input or anything having params or link tag: `<img src=0 onerror='alert(1)'>` or `<img src=x onerror="&#x61;lert(1)">`
 - encode URL encode/base64 once or twice for the payload upto 5 times
 - payload file use fuzzing to find xss
 - check CSP if it allows it
@@ -313,7 +313,7 @@ TO read:
 
 
 
-#### CSP
+# CSP
 CSP for directive with random hash that tells to execute only if the script contains that nonce.
 Also it refers to the source where js can be executed like `self`
 
@@ -324,15 +324,16 @@ Also it refers to the source where js can be executed like `self`
 
 https://www.cobalt.io/blog/csp-and-bypasses
 
-#### CORS:
+# CORS:
 
 Cross origin resource: It tells what resource to access depending upon the header and origin provided. 
-- Shodan can be used to check ACAO or other very easily. Query : `"Access-Control-Allow-Origin: null"`
+- Shodan can be used to check ACAO or other very easily. Query : `"Access-Control-Allow                      -Origin: null"`
 - URL 'Origin: http://example.com`.hackxor.net/'(safari) is parses as Origin: http://example.com or 'Origin: http://example.com_hackxor.net/' (firefox or chrome)
 - Do add `Origin` in header
 - Do subdomain check and domain suffix check
 - Do protocol check
 - Do check if Vary is added in response header as most of the time dynamic ACAO header is used
+  - `User-agent:<img src=0 onerror='alert(1)'>`
 - Do `origin: null` check
 - Most of the time intranet have ACAO set to `*`, ref: https://portswigger.net/research/exploiting-cors-misconfigurations-for-bitcoins-and-bounties 
 - Checking if all subdomain are whitelisted `Access-Control-Allow-Origin: *.example.com`
@@ -340,12 +341,13 @@ Cross origin resource: It tells what resource to access depending upon the heade
 If a website is accessed over HTTPS but will happily accept CORS interactions from http://wherever, someone performing an active man-in-the-middle (MITM) attack can pretty much bypass its use of HTTPS entirely. ![CORS Protocol Relaxation Vulnerability](images/cors-protocol.png)
 
 
-`
-Access-Control-Allow-Origin: https://foo.example # what resource are allowed
-Access-Control-Allow-Methods: POST, GET, OPTIONS # What methods are allowed
-Access-Control-Allow-Headers: X-PINGOTHER, Content-Type # 
-Access-Control-Allow-credentials: true # allow cookies
-`
+  
+  `Access-Control-Allow-Origin: https://foo.example # what resource are allowed`
+  `Access-Control-Allow-Methods: POST, GET, OPTIONS # What methods are allowed`
+  `Access-Control-Allow-Headers: X-PINGOTHER, Content-Type #` 
+  `Access-Control-Allow-credentials: true # allow cookies which means login credentials can be sent`
+   
+
 - Access-Control-Allow-Origin: Specifies which origins are allowed to access the resource. For example, https://foo.example allows requests only from that domain, preventing access from unauthorized origins.
 
 - Access-Control-Allow-Methods: Defines the HTTP methods (e.g., POST, GET, OPTIONS) permitted in cross-origin requests. This ensures that only approved methods can be used when interacting with the resource.
@@ -355,7 +357,7 @@ Access-Control-Allow-credentials: true # allow cookies
 - Access-Control-Allow-credentials: Indicates whether the resource allows sending credentials (e.g., cookies) in cross-origin requests. This is often used for authentication purposes. When set to false, cookie or csrf token cannot be stolen
 
 - Does not work in firefox but works at chrome
-- SOP (Same Origin Policy): has 3 parts: protocol + domain + port.
+- SOP (Same Origin Policy): has 3 parts: **protocol** + **domain** + **port**.
 - Check using different value of `origin` and different protocol like `http(s)` in request header to see if we get ACAO
     Intercept all traffic and exploit via man in the middle: https://portswigger.net/web-security/cors , section: Breaking TLS with poorly configured CORS
 - dynamic gereration of ACAO using wildcard
@@ -372,11 +374,11 @@ Access-Control-Allow-credentials: true # allow cookies
     * null origin is same as `*` and more dangerous as `*`
       * `<iframe sandbox="allow-scripts allow-top-navigation allow-forms" src="data:text/html,<script> cors request here</script>"></iframe>`
   
-  * with origin as `*` or `null`, ACAC is not applicable hence set to false automatically, also the website has to do setup of ACAO with wildcard or something and that is the reason that it is dynamically generated
+  * with origin as `*` even in `*.example.com` or `null`, ACAC is not applicable hence set to true automatically, also the website has to do setup of ACAO with wildcard or something and that is the reason that it is dynamically generated
   * `*.mysite.com` (all subdomain) in ACAO is also vulnerable if any of your subdomain is vulnerable
-    ```
+    `
       https://subdomain.vulnerable-website.com/?xss=<script>cors-stuff-here</script>
-    ```
+    `
     solve this once again: https://portswigger.net/web-security/cors/lab-breaking-https-attack
   * Indication where dynamic header is used, is to check if the origin is not given in request but AC headers are there in response and
   * ACAO is not sent in response by most of server when origin is not given in request so check with origin request header to get if CORS header are there in response
@@ -406,6 +408,28 @@ Access-Control-Allow-credentials: true # allow cookies
 
 - URL validation bypass cheatsheet: https://portswigger.net/web-security/ssrf/url-validation-bypass-cheat-sheet
 - css injection: https://portswigger.net/research/detecting-and-exploiting-path-relative-stylesheet-import-prssi-vulnerabilities#badcss
+
+#### usagecase: Pycharm vulnerability
+Ref: https://blog.checkpoint.com/2019/07/23/remote-code-execution-vulnerability-in-pycharm/
+
+Get program listening to tcp port
+`lsof -P -iTCP | grep LISTEN`
+Use nmap to figure out what is being sent
+`nmap -A -p <PORT> <IP>`
+Is this a tcp server?
+
+If yes then `curl -v -H "Origin:https:evil.com" "http://localhost:7679"`
+
+codeium is found vulernable
+`pgrep <proc-name>`
+`ps -p <pid>`
+
+
+
+
+curl -v -H "Origin:https://evil.com" "http://localhost:52358"
+
+
   
 ### Bypass cloudflare WAF
 - If website is behind Cloudflare WAF then the vulnerabilities are minimised.
@@ -457,3 +481,5 @@ https://example.com/%2f%2fevil.com	Encoded //evil.com bypasses.
 
 - Fragment identifiers (#) are ignored by servers but used by browsers.
 		
+
+
