@@ -131,7 +131,8 @@ chaos client for cli
 
 	
 ### Directory brute forcing
-`gobuster dir -u "https://www.zerobounce.net/docs/" -w ~/Downloads/combined_words.txt -t 100 -b 429,301 -r`
+`gobuster dir -u "https://www.zerobounce.net/docs/" -w ~/Downloads/combined_words.txt -t 100 -b 429,301 -r` 
+  * If error found then add `--timeout 2s`
 Or `dirsearch -u <url>` # good for bruteforcing for file and subdomains
 Or 
 `dirb https://www.zerobounce.net <wordlist>` # does recursive directory iteration

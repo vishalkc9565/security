@@ -105,9 +105,15 @@ Active DNS resolution lookup tool
   
 
 #### Gobuster
-`gobuster dns -w wordlist -d <domain name>`
+Used for subdomain bruteforce enumeration
+`gobuster dns -w wordlist -d <domain name> | anew subdomain_gobuster`
 
-
+### Permutation 
+`cat words.txt`  # contains api,test,admin,dev,staging,qa etc
+`altdns -i subdomains.txt -o perm_subdomain_tmp -w words.txt -r -s perm_subdomain -t 3 ` # permutation from words and temp is saved and then dns is resolved and saved to -s perm_subdomain_tmp
+`cat perm_subdomain_tmp | cut -d '.' -f 1-3 | anew perm_subdomain_final` # extract 1 to 3 section delimited by `.` with 3 level in subdomain only
+`cat perm_subdomain_final | httpx-toolkit | anew subdomain_perm`
+`cat subdomain_perm | cut -d '/' -f 3 | tr '\n' ' ' ` # convert newline to space from file
 ### Other ways to check live subdomain
 
 - Httpx-toolkit
