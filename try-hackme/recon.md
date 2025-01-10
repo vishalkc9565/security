@@ -91,7 +91,7 @@ chaos client for cli
     - netcraft dns
     - Project discovery io chaos
 
-### commands to find domain
+## commands to find domain
 <TODO> at subdomain-enum.md
 
 
@@ -132,11 +132,10 @@ chaos client for cli
 	
 ### Directory brute forcing
 `gobuster dir -u "https://www.zerobounce.net/docs/" -w ~/Downloads/combined_words.txt -t 100 -b 429,301 -r`
+Or `dirsearch -u <url>` # good for bruteforcing for file and subdomains
 Or 
 `dirb https://www.zerobounce.net <wordlist>` # does recursive directory iteration
-or
-ffuf
-Or dirsearch <good for bruteforcing> for file and subdomains
+
 Or ffuf
 
 

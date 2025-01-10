@@ -428,10 +428,6 @@ checking the IP of malicious activity
     - open-source databases out there, like AbuseIPDB, and Cisco Talos Intelligence, where you can perform a reputation and location check for the IP address
 
 
-  
-
-
-
 
 
 

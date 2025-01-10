@@ -44,6 +44,7 @@ Kali-menu > password profiling worklist
 	gobuster
 	ffuf command
 	anew
+	seclist; sudo apt install seclists
 	meg or fff # tool for fetching lot of URL and nice to servers
 
 	wayurls
@@ -112,6 +113,10 @@ Kali-menu > password profiling worklist
 		seq 0 255 > range.txt # Then run ffuf
 
  		ffuf -w range.txt:FUZZ1 -w range.txt:FUZZ2 -w range.txt:FUZZ3 -w range.txt:FUZZ4  -u https://0bfd51139862b5a11d4fb8d61b7f4465.ctf.hacker101.com/api/v1/secrets  -H "X-Forwarded-For: FUZZ1.FUZZ2.FUZZ3.FUZZ4"  -mode clusterbomb  -v -of html -o results.html -fc 403,404,500
+
+
+		subdomain enumeration:
+		`ffuf -v -t 400 -w subdomains-top1million-110000.txt -mode pitchfork -u http://FUZZ.nahamstore.thm `
 
 	e.g of telnet
 		telnet example.com 80

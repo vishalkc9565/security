@@ -1,4 +1,4 @@
-## Horizontal domains Recon
+# Horizontal domains Recon
 
 whois.arin.net or whoxy : Find IP block and ASN 
 	Search for name only
@@ -22,21 +22,21 @@ https://chaos.projectdiscovery.io : public program to get subdomain
 
 Chatgpt for asking acquisition to make horizontal domain for the same company
 
-## Vertical subdomain Recon
-### Passive subdomain enumeration
+# Vertical subdomain Recon
+## Passive subdomain enumeration
 (passive)
 
 - `assetfinder wellsfargo.com | sort | uniq | tee subdomain_assetfinder.txt`
 - `subfinder  -d wellsfargo.coms |sort |  uniq | tee subdomain_subfinder.txt` (set api key)
+- `wfuzz -u nahamstore.thm -w subdomains-top1million-110000.txt -H "Host: FUZZ.nahamstore.thm" --hc 404 ~~--hw 65~~` # subdomain from seclist
 - `chaos -d wellsfargo.com -o subdomain_chaos`
 - This list all the URLs and not there for subdomains
   - `gau --threads 5 wellsfargo.com |sort | uniq | tee subdomainres_gau.txt`
   - `cat subdomainres_gau.txt | awk -F '//' '{print $2}' | awk -F '/' '{print $1}' | anew subdomain_gau.txt`
 
-
 ### Sublist3r
 Enumeration of subdomain using fuzzing
-	Ffuf 
+	Ffuf
 	Worklist form subdomain wordlist seclist, nokov subdomain, awesome subdomain enumeration
  
 
@@ -54,6 +54,7 @@ Make use of bigword list in VPS on assetnote but not locally
 ### Amass
 
 - `amass enum -active -d wellsfargo.com -p 80,443,8080  | tee subdomain_amass.txt`
+- `amass enum -brute -passive -d wellsfargo.com | tee -a susubdomain_amass_p.txt`  # brutefoce passive enumeration
 - `amass viz -d3 -d <domain-name>`
 - `amass track -d <domain-name>` # to track the recently added subdomain, good to hunt for recently added subdomain
 - `ammas enum -df <file-with-domains> | tee subdomain_amass.txt`
@@ -97,13 +98,15 @@ There is `./SCOPE` file which keeps track of scope
 `mv all_subdomain2.txt all_subdomain.txt`
 
 
-### (Active IP lookup)
+### (Active IP lookup/resolution from IP)
 Active DNS resolution lookup tool
 - `massdns -r  ../resolvers.txt -t A -o S -w live_subdomain_massdns.txt all_subdomain.txt`
 - Collect the IPs from here and later do `masscan` or `nmap`
+  
 
 #### Gobuster
 `gobuster dns -w wordlist -d <domain name>`
+
 
 ### Other ways to check live subdomain
 
