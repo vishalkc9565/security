@@ -6,6 +6,10 @@ apt list <package-name>
 
 Installation of viralmaniar/bigbountyRecon for initial recon/exploration
 
+
+
+## proxy_setup_errors.docx
+
 ## Go installation setup
 ```
 GOPATH=/home/kali/go 
@@ -31,3 +35,4 @@ GOROOT path set to EMPTY solves the compilation error
 
 API setup for subfinder, amass, chaos is required
 
+## command lists

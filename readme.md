@@ -116,7 +116,8 @@ Kali-menu > password profiling worklist
 
 
 		subdomain enumeration:
-		`ffuf -v -t 400 -w subdomains-top1million-110000.txt -mode pitchfork -u http://FUZZ.nahamstore.thm `
+		
+		`ffuf -u 'http://nahamstore.thm/stockcheck' -c -w /usr/share/SecLists/Discovery/DNS/subdomains-top1million-110000.txt -X POST -d 'product_id=2&server=stock.nahamstore.thm@FUZZ.nahamstore.thm#'`
 
 	e.g of telnet
 		telnet example.com 80

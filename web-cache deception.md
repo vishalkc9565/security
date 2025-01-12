@@ -8,12 +8,6 @@ Web cache deception exploits cache rules to trick the cache into storing sensiti
 
 
 
-
-
-
-
-
-
 ## Web cache poisoning
 - Web cache poisoning manipulates cache keys to inject malicious content into a cached response, which is then served to other users.
 - Sending harmful response to user as a result of cacheing

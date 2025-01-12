@@ -1,4 +1,4 @@
-Simple sql injection (NO spcaces use `+` instead between string )
+Simple sql injection (No space use `+` instead between string )
 ========================
 Submitting the single quote character ' and looking for errors or other anomalies.
 	cheat sheet: https://portswigger.net/web-security/sql-injection/cheat-sheet

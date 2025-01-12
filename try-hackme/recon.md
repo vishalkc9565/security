@@ -1,31 +1,3 @@
-
-### Concept
-- Every penetration testing should be customised for each target category like ecommerce, banking etc
-- functionality mapping
-  - Ecommerce
-    - Major
-      * Security of Payment Gateway
-      * Security of customer journey like validating form, location base vulnerability
-      * Security of personal data
-      * Security of integrity of catalogue
-      * Security of service continuity (DoS)
-      * Security of Traffic diversion
-
-    - Minor ( based on target)
-      * Search bar
-      * Login
-      * Oauth
-      * Reset password
-      * pincode ( location required)
-      * request a product/replace instead of product not available/ refund if product not available
-      * Add to cart
-      * Favourites
-      * Hosted images
-      * special instruction ()
-      * edit profile
-      * EBT snap card
-  
-
 # Recon
 - CIDR: Classless Inter Domain Routing is IP address allocation method in batch for efficience
 - ASN: A collection of IP and who owns them
@@ -123,7 +95,7 @@ chaos client for cli
 ### Record all response 
 
 `awk '{print "https://"$1"/"}'  live_subdomain > live_subdomain_with_http `
-`meg --verbose  ~/combined_words.txt  live_subdomain_with_http  meg.out  -d 5000 -c 100`
+`meg   ~/combined_words.txt  live_subdomain_with_http  meg.out  -d 5000 -c 100`
 
 - find resources like `roboot.txt`, `package.json` `.well-known/security.txt`
 
@@ -131,14 +103,25 @@ chaos client for cli
 
 	
 ### Directory brute forcing
-`gobuster dir -u "https://www.zerobounce.net/docs/" -w ~/Downloads/combined_words.txt -t 100 -b 429,301 -r` 
+`gobuster dir -u "https://www.zerobounce.net/docs/" -w ~/Downloads/combined_words.txt -t 100 -b 429,301 -r` # follow redirect
   * If error found then add `--timeout 2s`
-Or `dirsearch -u <url>` # good for bruteforcing for file and subdomains
+Or `dirsearch [-u <url>| -l urls_file_path] -w <wordlist> -r` # good for bruteforcing for file and subdomains `dirsearch -l subdomain -w /usr/share/wordlists/dirb/common.txt -r`
 Or 
 `dirb https://www.zerobounce.net <wordlist>` # does recursive directory iteration
 
 Or ffuf
 
+
+Tunneling if the server is redirected to localhost
+`ssh -L 8080:127.0.0.1:80 sodatex@10.14.88.47`
+every form can be checked for sql injection
+`sqlmap -r request_file --risk 3 --level 5 --threads 10 --dbs --dump` # use -p param_name that is persent in request_file otherwise no need to pass any parameter
+path traversal if path is found
+
+### param serach
+Search for each dir params
+- arjun: `pipx install arjun`
+`arjun -u <url>`
 
 
 #------------------------------------------------------

