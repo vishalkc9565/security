@@ -164,7 +164,7 @@ More commonly in this situation, angle brackets are blocked or encoded, so your 
 `<link rel="canonical" accesskey="X" onclick="alert(1)" />`
  Note: if your reflection is repeated then the key combination will fail. A workaround is to then inject another attribute that breaks the second reflection. e.g. `" accesskey="x" onclick="alert(1)" x='`
  https://portswigger.net/web-security/cross-site-scripting/contexts/lab-canonical-link-tag 
-
+ 
 
 ## Stored cross site attack
     <script>alert(1)</script>

@@ -66,10 +66,6 @@ Tools or addon:
 ## remind to check
 -  blind xss
 -  client side prototype pollution
--  https request smuggle  
-
-
-
 
 
 

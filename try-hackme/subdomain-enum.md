@@ -70,6 +70,7 @@ Make use of bigword list in VPS on assetnote but not locally
 - Ffuf
 - Worklist form subdomain wordlist seclist, nokov subdomain, awesome subdomain enumeration
 `ffuf -v -t 400 -w subdomains-top1million-110000.txt -mode pitchfork -u http://FUZZ.nahamstore.thm `
+
 ### Find Sub-subdomain
 	
 * Gives live subdomain and sub subdomain

@@ -59,7 +59,8 @@ Finding a lot of IPs
 ### Nmap port scanning
 ![TCP-3-way handshake](../images/tcp-3-way-handshake.png)
 - check the Nmap cheatsheet pdf
-- `-PX` is meant host discovery on specific port and `-sX` is meant for port scanning 
+- `-PX` is meant host discovery on specific port and 
+- `-sX` is meant for port scanning 
 - For local network scan, using ARP protocol where who has this IP request is broadcasted and receives a response whoever has that to map ip to MAC address. This protocol is not used elsewhere
 `sudo nmap   10.0.2.1/24  -PR -sn --reason -vv `
 - ICMP scan: used for error report, host discovery using ICMP. Also not feasible as being blocked by the firewalls. Mostly not being used
@@ -67,12 +68,14 @@ Finding a lot of IPs
   `PP` : ICMP timestamp
   `PM` : ICMP Address mask 
 - Important options
+  - `-Pn`: No host discovery, only port scan
   - `-n` is meant for no dns resolution
   - `T1-5` is meant for fast scan, default is `T3`
   - `-A` `-min-rate 1000` `-max-retries 3`
   - `-sV` for version detection for service running on the port
   - `-A` for all scan of OS detection, version, script scanning and traceroute
   - `-R` : reverse DNS lookup for all hosts (offline also)
+  - `-v` : verbose
 - Nmap firewall bypassing: https://nmap.org/book/man-bypass-firewalls-ids.html
 - State of port 
   1) OPEN 
