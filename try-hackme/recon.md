@@ -64,7 +64,8 @@ chaos client for cli
     - Project discovery io chaos
 
 ## commands to find domain
-<TODO> at subdomain-enum.md
+ subdomain-enum.md
+
 
 
 ### httpx-toolkit/probe to do following 
