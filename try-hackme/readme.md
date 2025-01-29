@@ -40,8 +40,11 @@ https://tryhackme.com/r/room/owasptop10
 ## SUBDOMAIN
 ### SQLMAP scan for parametrised URL
 ### Path traversal argument 
-- Find path associated variable and then install physcopath extension of bapp store
+- Find path associated variable and then install `physcopath` extension of bapp store
 - Do attack on intruder for path using the extension
+
+
+
 
 ### SSRF and ssrf_docx
 - Any url is suspected to have SSRF

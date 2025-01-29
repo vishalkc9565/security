@@ -12,7 +12,10 @@ XSS types
 - dalfox # install using go; xss vul finder
   `dalfox url <domain> --timeout 50` # Update worker etc.
   use different modes
-
+- katana: `katana -list live_subdomain_httpx_toolkit_subonly -jc`
+- xss_vibes
+  - adding the following command in `.zshrc` file: `alias xss_vibes='source ~/venv/xss_vibes/bin/activate; python3 ~/tools/xss_vibes/main.py'`
+  - `xss_vibes -u <url>` or `xss_vibes -f <file> --waf --crawl <-w cloudflare>` where file/url should contain parameters
 When you are seaching somewhere and if its burp then the search text added in dom by js, will not be shown
 - If website is behind Cloudflare WAF then the vulnerabilities are minimised.
 
