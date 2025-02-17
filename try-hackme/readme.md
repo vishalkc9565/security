@@ -40,7 +40,7 @@ https://tryhackme.com/r/room/owasptop10
 ## SUBDOMAIN
 ### SQLMAP scan for parametrised URL
 ### Path traversal argument 
-- Find path associated variable and then install `physcopath` extension of bapp store
+- Find path associated variable and then install `psycopath` extension of bapp store
 - Do attack on intruder for path using the extension
 
 
@@ -203,10 +203,16 @@ Are a type of access control vulnerability that arises when an application uses 
   - decimal
   - string with delimiters: `'12,34'`
 - Change the request method type to POST, GET, OPTION, PUT
-- Use of depricated version like if the the URL has V2 then V1 might also exist
+- Use of deprecated version like if the the URL has V2 then V1 might also exist
 - Exploiting IDORs in APIs that use static keywords. e.g if `/api/me/profile` is being used then it might be possible to use the same api with different userid `/api/123/profile`
 - sometime the parameter contains UUID, then finding other's UUID is difficult so use public profile pictures, app sharing links, in app message,re-register the email, error with UUID, or /all, /list or some wayback machine, and seach engine to find it. https://x.com/intigriti/status/1489941887641399300 
 - Second order IDORs: `form {userID: '1234/../1245'}` or `/api/1234/../1245`
+- Error induced information shown on messages
+- Sql injection for parameters to reveal some secrets
+- Directory search to reveal some information or portals to give access to admin websites
+- Grep to do search of secrets
+- Use of Request method Trace to reveal some header which could be used to bypass WAF
+- use `wget -r <URL>` to download the data recursively
 
 
 #### Firewall

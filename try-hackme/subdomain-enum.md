@@ -28,7 +28,7 @@ Chatgpt for asking acquisition to make horizontal domain for the same company
 
 - `assetfinder wellsfargo.com | sort | uniq | tee subdomain_assetfinder.txt`
 - `subfinder  -d wellsfargo.coms |sort |  uniq | tee subdomain_subfinder.txt` (set api key)
-- `wfuzz -u nahamstore.thm -w subdomains-top1million-110000.txt -H "Host: FUZZ.nahamstore.thm" --hc 404 ~~--hw 65~~` # subdomain from seclist
+- `wfuzz -u nahamstore.thm -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt -H "Host: FUZZ.nahamstore.thm" -c -t 100 --hc 404  ~~--hw 65~~` # subdomain from seclist
 - `chaos -d wellsfargo.com -o subdomain_chaos`
 - This list all the URLs and not there for subdomains
   - `gau --threads 5 wellsfargo.com |sort | uniq | tee subdomainres_gau.txt`
@@ -38,9 +38,18 @@ Chatgpt for asking acquisition to make horizontal domain for the same company
 Enumeration of subdomain using fuzzing
 	Ffuf
 	Worklist form subdomain wordlist seclist, nokov subdomain, awesome subdomain enumeration
- 
+`sublist3r -d signalpath.com | tee subdomain_sublist3r.txt`
 
 - `sublist3r ...` (have installed but giving the problems due to some escape character)
+
+### WAYBACK urls
+`grep -v '!' SCOPE | sed 's/\*.//' | waybackurls | anew subdomain_wayback`
+or iterate through all the subdomains from live_subdomain
+`waybackurls  https://alternativa.film  | grep -vE ".png$|.webp$|.svg$|.jpg$|.woff$|.css"  > wayback_links `
+
+#### Gobuster
+Used for subdomain bruteforce enumeration
+`gobuster dns --no-color -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt -d khealth.com -o subdomaingobuster_khealth`
 
 ### Other ways to find subdomain
 
@@ -87,14 +96,22 @@ Make use of bigword list in VPS on assetnote but not locally
 
 - `shuffledns  -d wellsfargo.com -w ~/Downloads/bitquark-subdomains-top100000.txt -r  ~/Documents/probe/tools/massdns/lists/resolvers.txt -v -o subdomain_shuffledns -mode bruteforce`
 <currently not working why???>
+
+
+### nslookup
+
+
+
 ### Combine all the subdomain
 
 - `cat subdomain_* | anew all_subdomain.txt`
   
 ### Inscope URL
+#### Installation
 `git clone https://github.com/nil0x42/inscope`
 `sudo cp inscope/inscope /usr/local/bin/`
 
+#### Usage
 There is `./SCOPE` file which keeps track of scope
 `cat all_subdomain.txt |  inscope | tee  all_subdomain2.txt`
 `mv all_subdomain2.txt all_subdomain.txt`
@@ -106,9 +123,7 @@ Active DNS resolution lookup tool
 - Collect the IPs from here and later do `masscan` or `nmap`
   
 
-#### Gobuster
-Used for subdomain bruteforce enumeration
-`gobuster dns -w wordlist -d <domain name> | anew subdomain_gobuster`
+
 
 ### Permutation 
 * altdns

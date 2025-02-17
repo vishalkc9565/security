@@ -1,4 +1,4 @@
-## https request smuggle 
+## HTTPS request smuggle
 - Everything is there to test in first image.
 ![Detect](<../images/content-smuggle/confirm logic.png>) 
 - Frontend WAF can be bypassed using smuggling.

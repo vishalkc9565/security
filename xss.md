@@ -18,6 +18,7 @@ XSS types
   - `xss_vibes -u <url>` or `xss_vibes -f <file> --waf --crawl <-w cloudflare>` where file/url should contain parameters
 When you are seaching somewhere and if its burp then the search text added in dom by js, will not be shown
 - If website is behind Cloudflare WAF then the vulnerabilities are minimised.
+- React href is not protected by default from encoding. Otherwise react is mostly xss safe
 
 
 ### Reflected or Stored XSS 
@@ -502,12 +503,26 @@ http://017700000001	Octal form of 127.0.0.1.
 http://127.0.1	    Shortened version of 127.0.0.1.
     Applications redirect users based on unvalidated URLs, leading to open redirects.
 
-- Bypass Techniques:Applications redirect users based on unvalidated URLs, leading to open redirects.
+- (Redirect URLS) Bypass Techniques:Applications redirect users based on unvalidated URLs, leading to open redirects.
+  - starts with domain
+      payload `https://site.com@attacker-website.com`
+  - includes domain
+      payload `https://attacker-website.com/?foo=site.com`
+  - Blacklist: The website may also blacklist the keywords https:// and http:// . If this is improperly implemented by matching the whole string http:// instead of http, the filter can be bypassed by putting in a third slash in the beginning:
+      payload `https://site.com/login?return=https:///attacker-website.com`
 
 https://example.com/?url=http://evil.com	Unvalidated URL in parameters.
 https://evil.com/redirect?to=https://example.com	Redirection chain abuse.
 https://example.com/%2f%2fevil.com	Encoded //evil.com bypasses.
 
+@ respresent username and password separation 
+  - Any param with / something in param value can be URL path 
+  - can be used for authetnication syntax 
+    - `http://username:password@site.com`
+    - `username@site.com`
+
+all list of webcontent: `/usr/share/seclists/Discovery/Web-Content`
+paths for brutefocing `/usr/share/seclists/Fuzzing/LFI/LFI-LFISuite-pathtotest-huge.txt`
 - Fragment identifiers (#) are ignored by servers but used by browsers.
 		
 

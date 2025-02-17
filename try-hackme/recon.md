@@ -16,7 +16,7 @@
     - lopseg.com.br/osint : all in one (IMPORTANT) ( check different options: webarchieve and check each link)
     - whoxy
     - All acquistion to collect domains using chatgpt
-    - nslookup to collect dns record
+    - `nslookup` to collect dns record
     - Add API keys for the subfinder and amass to get better result
 
 
@@ -66,7 +66,12 @@ chaos client for cli
 ## commands to find domain
  subdomain-enum.md
 
-
+### widen the scope
+1. nslookup to find other similar records
+2. Find directory using ffuf or dirsearch
+3. nmap with -A -sC for both domain and IP
+4. Usage of censys for better search
+5. Use nikto to identify webservers
 
 ### httpx-toolkit/probe to do following 
 - Check domain is live or not
@@ -78,13 +83,13 @@ chaos client for cli
   `httpx-toolkit -l all_subdomain.txt -t 100  -o live_ip_subdomain_httpx_toolkit -nc -v -stats -timeout 60 -pa -fr -sc -td`
 - don't give any analysis to ip just proceed with subdomain eyewitness
   - `cat live_ip_subdomain_httpx_toolkit live_subdomain_httprobe | awk -F ' ' '{print $1}'| awk -F '^http://|^https://' '{print $2}' | uniq |  anew  live_subdomain`
-
+- for IP extraction
+  - `cat live_ip_subdomain_httpx_toolkit | awk -F ' ' '{print $3}' | sed  's/\[//g; s/\]//g'| uniq |  anew  live_ip`
  
-
 ###  Eyewitness cmd for screenshot
 –timeout, -F filename, –web, –thread
 
-`eyewitness --web -f live_subdomain --timeout 100 -d livesubdomain_screenshot_eye --thread 4 --prepend-https`
+`pm2 start "eyewitness --web -f live_subdomain --timeout 100 -d livesubdomain_screenshot_eye --thread 4 --prepend-https" --name eyewitness`
 - To resume the screenshot process
   `eyewitness --resume`
 
@@ -110,12 +115,13 @@ chaos client for cli
 
 #### Dirsearch
 `dirsearch [-u <url>| -l urls_file_path] -w <wordlist> -r` # good for bruteforcing for file and subdomains `dirsearch -l subdomain -w /usr/share/wordlists/dirb/common.txt -r`
-
+or `-w  /usr/share/seclists/Discovery/Web-Content/raft-large-directories-lowercase.txt`
 `dirsearch  -r --thread 100 -u https://dnm.prod.dradis.netflix.com -w /usr/share/dirbuster/wordlists/directory-list-2.3-medium.txt -x 504`
 
 #### Dirb
 
 `dirb https://www.zerobounce.net <wordlist>` # does recursive directory iteration
+`dirb <URL> -H "X-Forwarded-For: 127.0.0.1" -R`
 #### Fuff
 
 
