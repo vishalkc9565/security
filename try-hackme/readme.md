@@ -37,20 +37,19 @@ WAF: Web application firewall.
 https://tryhackme.com/r/room/owasptop10
 
 ## RECON and info_gather.docx
+## Google Dorks
+- `site:<>`, `-keyword` `inurl:<keyword>`, `intitle:<keyword>` `filetype:<keyword>` `ext:<keyword>` `allintext`
+- `inurl:&` gives parametrised urls
+- 
 ## SUBDOMAIN
-### SQLMAP scan for parametrised URL
-### Path traversal argument 
-- Find path associated variable and then install `psycopath` extension of bapp store
-- Do attack on intruder for path using the extension
-
-
-
-
-### SSRF and ssrf_docx
-- Any url is suspected to have SSRF
-- `@` in url means `username:password@hostname`
-- Internal subdomain
-
+- IP check using telenet
+- `massdns` for subdomain enumeration
+- `amass` for subdomain enumeration
+- `subfinder` for subdomain enumeration
+- `sublist3r` for subdomain enumeration
+### Subdomain takeover
+## Fuzzing for directories
+## Fuzzing for params
 ### Finding hidden query param
 using ffuf with /seclist/discovery/web-content/raft-long-text
 https://github.com/s0md3v/Arjun/wiki/Usage#import-multiple-targets
@@ -59,8 +58,25 @@ https://github.com/s0md3v/Arjun/wiki/Usage#import-multiple-targets
 and try
 - burp param miner extension
   Extender->Extensions->Param Miner->Output
+
+## Information collection and version check using exploit db
+- wrapplyzer
+- exploit db
+## Nucliei for vulnerability check
+### SQLMAP scan for parametrised URL
+### Path traversal argument 
+- Find path associated variable and then install `psycopath` extension of bapp store
+- Do attack on intruder for path using the extension
 ### Xss.md
-### XSS cookie csrf docx
+### XSS cookie csrf docx ( CSRF)
+### SSRF and ssrf_docx
+- Any url is suspected to have SSRF
+- `@` in url means `username:password@hostname`
+- Internal subdomain
+### Information Disclosure
+### PII/ Access Control
+### Race condition
+### Request Smuggling
 ### File Intrusion docx
 ### RCE / cmd_injection.docx
 using 
@@ -68,15 +84,14 @@ using
 - netcat
 - php shell
 
-
-
-## Nuclei
 ## Authentication docx
 ## Race condition
 ## 
 ## websocket.docx
 ## LLM attacks
-
+## SOP/CORS
+## Session fixation
+## WP-scan
 ## API testing docx
 
 

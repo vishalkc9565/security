@@ -76,6 +76,7 @@ Finding a lot of IPs
   - `-A` for all scan of OS detection, version, script scanning and traceroute
   - `-R` : reverse DNS lookup for all hosts (offline also)
   - `-v` : verbose
+- Use `--min-rate=10000` if you want to scan faster but you would be getting detected
 - Nmap firewall bypassing: https://nmap.org/book/man-bypass-firewalls-ids.html
 - State of port 
   1) OPEN 
@@ -125,8 +126,8 @@ Pre-written scripts are available at `/usr/share/nmap/scripts`
   Use `masscan` for this or even 
 * Host Discovery
   * To check if host is live using: nmap  using various protocol like ARP, TCP, UDP, ICMP
-* Port Scanning
-* Service and version iteration
+* Port Scanning (`-p-` and `--min-rate=10000`)
+* Service and version iteration (`-sCV`)
 * OS Detection
 * Exploit
     After recon do search for exploit on `searchexploit` or exploit db

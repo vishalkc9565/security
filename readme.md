@@ -27,6 +27,9 @@ https://0xb0b.gitbook.io/writeups/tryhackme/2024/lookup
 
  - reverse shell online
 
+https://www.vicarius.io/vsociety/posts/critical-gitlab-account-takeover-vulnerability-cve-2023-7028
+
+
 TODO:
 	OSWAP tutorials 
 	create the bugcrowd account also
@@ -601,7 +604,8 @@ First study the subdomain takeover
 - check vulnerable cloud services: 
   	https://github.com/EdOverflow/can-i-take-over-xyz
 
-#### Important commands  
+#### Important commands
+  
 ```
 dig # to fetch the details of server ip
 dig domain-name @8.8.8.8

@@ -66,10 +66,10 @@ chaos client for cli
 ## commands to find domain
  subdomain-enum.md
 
-### widen the scope
+### Widen the scope
 1. nslookup to find other similar records
 2. Find directory using ffuf or dirsearch
-3. nmap with -A -sC for both domain and IP
+3. nmap with -A -sC -sV for both domain and IP
 4. Usage of censys for better search
 5. Use nikto to identify webservers
 

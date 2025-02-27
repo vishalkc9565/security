@@ -58,7 +58,7 @@ Used for subdomain bruteforce enumeration
 - Hakrawler (active crawler)
 Shuffledns ( a fork of massdns) (router crashing so VPS is required
 Make use of bigword list in VPS on assetnote but not locally
-		shuffledns  -d wellsfargo.com -w ~/Downloads/bitquark-subdomains-top100000.txt -r  ~/Documents/probe/tools/massdns/lists/resolvers.txt -v -o subdomain_shuffledns -mode bruteforce
+`shuffledns  -d wellsfargo.com -w ~/Downloads/bitquark-subdomains-top100000.txt -r  ~/Documents/probe/tools/massdns/lists/resolvers.txt -v -o subdomain_shuffledns -mode bruteforce`
         
 ### Amass
 
@@ -99,8 +99,7 @@ Make use of bigword list in VPS on assetnote but not locally
 
 
 ### nslookup
-
-
+DNS query for the IP
 
 ### Combine all the subdomain
 
