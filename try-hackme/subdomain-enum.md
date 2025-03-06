@@ -47,6 +47,7 @@ Enumeration of subdomain using fuzzing
 or iterate through all the subdomains from live_subdomain
 `waybackurls  https://alternativa.film  | grep -vE ".png$|.webp$|.svg$|.jpg$|.woff$|.css"  > wayback_links `
 
+
 #### Gobuster
 Used for subdomain bruteforce enumeration
 `gobuster dns --no-color -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt -d khealth.com -o subdomaingobuster_khealth`
@@ -78,7 +79,7 @@ Make use of bigword list in VPS on assetnote but not locally
 
 - Ffuf
 - Worklist form subdomain wordlist seclist, nokov subdomain, awesome subdomain enumeration
-`ffuf -v -t 400 -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt -mode pitchfork -u http://FUZZ.zomato.com -o subdomain_fuzz`
+`ffuf -v -t 400 -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt -mode pitchfork -u http://FUZZ.zomato.com -o subdomain_fuzz `
 `ffuf -w /usr/share/seclists/Discovery/DNS/bug-bounty-program-subdomains-trickest-inventory.txt -u https://FUZZ.zomato.com -mc 200,301,302,403 -o subdomain_fuzz`
 
 ### Find Sub-subdomain

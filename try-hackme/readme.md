@@ -199,6 +199,10 @@ Type of XXE attack:
   
 
 #### Broken Access Control
+access_control.md
+
+
+
 
 ##### IDOR  (Insecure Direct Object Reference)
 Are a type of access control vulnerability that arises when an application uses user-supplied input to access objects directly.
@@ -290,6 +294,11 @@ oshp-validator github to validate all headers ( for future )
 143.110.250.149
 checking the IP of malicious activity
   - open-source databases out there, like AbuseIPDB, and Cisco Talos Intelligence, where you can perform a reputation and location check for the IP address
+
+
+### Docker APIs (non public apis)
+`docker -H domain_name:2375 ps`
+`Docker -H <host>:<port> exec -it <container name> <command>`
 
 
 

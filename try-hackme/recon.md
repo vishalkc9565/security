@@ -131,13 +131,14 @@ Or ffuf
 Tunneling if the server is redirected to localhost
 `ssh -L 8080:127.0.0.1:80 sodatex@10.14.88.47`
 every form can be checked for sql injection
-`sqlmap -r request_file --risk 3 --level 5 --threads 10 --dbs --dump` # use -p param_name that is persent in request_file otherwise no need to pass any parameter
+`sqlmap -r request_file --risk 3 --level 5 --threads 10 --dbs --dump -p <param>` # use -p param_name that is persent in request_file otherwise no need to pass any parameter
 path traversal if path is found
 
 ### param serach
 Search for each dir params
 - arjun: `pipx install arjun`
 `arjun -u <url>`
+  - arjun sends  4 char to every param and hence the response might be invalid for some param like `email` `href` and hence these will not be detected
 
 
 #------------------------------------------------------
