@@ -18,6 +18,9 @@ sort by word in vim
 	- global search and move to 0 line
 `:args out/*`
 
+First go to tmp folder as this will download all the output valid files
+`wget -i urls_file -o output_file`
+
 Best writeups:
 https://github.com/HackTricks-wiki/hacktricks/tree/master/src/pentesting-web/sql-injection
 

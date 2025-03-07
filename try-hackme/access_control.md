@@ -37,7 +37,7 @@ types of models
 ### Testing steps:
 **Unprotected functionality:** 
 - directory search for sensitive location
-- robot.txt to get sesistive information
+- robots.txt to get sesistive information
 - site.xml file
 - Do grep search on the response of application for `admin`
 - find hidden fields

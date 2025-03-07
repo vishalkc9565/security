@@ -67,28 +67,46 @@ TO read
   - `nOnE`
 - if `jwks.json` is found then any payload can be signed
 - ADD new RSA > JWT Repeater > Attack > Embedded JSON Web Token (EJWT)
-- Bruteforce attack on the signature
-  `hashcat -a 0 -m 16500 <jwt> <wordlist>` # -m reppresents hashmode and 16500 represent jwt
+- Bruteforce attack on the signature for (symmetric sig)`HS256` not the asymmetric `RS256`
+  `hashcat -a 0 -m 16500 <jwt> <wordlist>` # -m reppresents hashmode and `16500` represent `HS256` jwt 
 - Algorithm confusion attack
   1) Obtain the server's public key: Find 
      1) `/jwks.json` or `/.well-known/jwks.json` or 
      2) extract from two token `docker run --rm -it sig2n <token1> <token2>`
-        ```
-        source ~/PycharmProjects/venvs/adobe_proj/bin/activate
-        git clone https://github.com/silentsignal/rsa_sign2n.git
-        cd rsa_sign2n/standalone
-        sudo docker build . -t sig2n
-        sudo docker run --rm -it sig2n
-        docker run --rm -it sig2n <token1> <token2>
-        ```
+      ##### Initial setup:
+      ```
+      source ~/PycharmProjects/venvs/adobe_proj/bin/activate
+      git clone https://github.com/silentsignal/rsa_sign2n.git
+      cd rsa_sign2n/standalone
+      sudo docker build . -t sig2n
+      ```
+      ##### Run
+      `sudo docker run --rm -it sig2n`
+      `python3 jwt_forgery.py <token1> <token2>`
         - Copy all the JWTs and hit the login page with each one to find the correct JWT.
         - Once the correct key is found, base64 encode the key present at file using the decoder.
         - Generate a new symmetric key and replace the value of `k` with the copied value.
         - Don't replace the `kid` in jwt header and send the request.
-  2) Convert the public key to a suitable format: modify to PEM or other format using JWT editor. convert the key > encode the RSA PEM key(contains new line) > Create HS256 key with k as the encoded RSA PEM key (does contain `==` at the end)
+  2) Convert the public key to a suitable format: modify to PEM or other format using JWT editor. convert the key > encode the RSA PEM key(contains new line) > Create `HS256` key with k as the encoded RSA PEM key (does contain `==` at the end)
   3) Create a malicious JWT with a modified payload and the alg header set to `HS256`.
   4) Sign the token with HS256, using the public key as the secret.
 - Check if `jwk` is accepted in header then 
+  **How to check**: 
+
+
+    With the extension loaded, in Burp's main tab bar, go to the JWT Editor Keys tab.
+
+    Generate a new RSA key.
+
+    Send a request containing a JWT to Burp Repeater.
+
+    In the message editor, switch to the extension-generated JSON Web Token tab and modify the token's payload however you like.
+
+    Click Attack, then select Embedded JWK. When prompted, select your newly generated RSA key.
+
+    Send the request to test how the server responds.
+
+  **Attack steps**
   1) add any new generated RSA key using json web token tab > Attack > embed jwt token 
   or
   1) add `jwk` in header and modify `kid` and then sign and send
@@ -117,7 +135,18 @@ TO read
     "k": "asGsADas3421-dfh9DGN-AFDFDbasfd8-anfjkvc"
   }
   ```
-  Sign the key with null path `/dev/null` and then sign it in burpsuite by first encoding base64
+  Sign the key with null path `/dev/null` and then sign it in burpsuite by first encoding base64 `null byte (AA==)`
+
+  Sign using null key
+    Click New Symmetric Key on JWT editor
+
+    In the dialog, click Generate to generate a new key in JWK format. Note that you don't need to select a key size as this will automatically be updated later.
+
+    Replace the generated value for the k property with a Base64-encoded null byte `(AA==)`. Note that this is just a workaround because the JWT Editor extension won't allow you to sign tokens using an empty string.
+
+    Click OK to save the key.
+    After changing the kid with different null paths like `../../dev/null`, click sign with the generated key
+
 - Injecting via `kid` header parameter where kid is db related value
   `kid` might be prone to SQL injection attack
   - create the key with jwt editor > new symmetric key > `AA==` in value of `k`

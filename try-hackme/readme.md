@@ -198,9 +198,13 @@ Type of XXE attack:
 - Out Band: No immediate response hence the attacker has to write the output to some file / or other server
   
 
+
+
 #### Broken Access Control
 access_control.md
 
+#### JWT token 
+try-hackme/jwt.md
 
 
 
